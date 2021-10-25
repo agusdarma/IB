@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta name="decorator" content="content-new">
-	<title>Kas Non Tunai - Data User</title>
+	<title>List IB - NabungDividen</title>
 		<!-- JAVA SCRIPT -->
 		<s:url var="remoteurl" action="UserData!processInput"/>
 		<script type="text/javascript">
@@ -56,7 +56,7 @@
                               <th scope="col">No</th>
                               <th scope="col">User Code</th>
                               <th scope="col">User Name</th>
-                              <th scope="col">Group</th>
+                              <th scope="col">Email</th>
                               <th scope="col">Level</th>
                               <th scope="col">Phone No</th>
                               <th scope="col"></th>
@@ -68,7 +68,7 @@
                               <td><s:property value="rowNum" /></td>
                               <td><s:property value="userCode" /></td>
                               <td><s:property value="userName" /></td>
-                              <td><s:property value="groupName" /></td>
+                              <td><s:property value="email" /></td>
                               <td><s:property value="userLevelDisplay" /></td>
                               <td><s:property value="phoneNo" /></td>
                               <td>

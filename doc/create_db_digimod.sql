@@ -255,3 +255,19 @@ CREATE TABLE distribution_detail
  PRIMARY KEY(syslogno, detail_id),
  INDEX detail_idx_syslogno(syslogno)
 );
+
+
+CREATE TABLE master_trading_account
+(
+ id INT AUTO_INCREMENT NOT NULL,
+ trading_account_no VARCHAR(100) NOT NULL,
+ trading_server VARCHAR(100) NOT NULL,
+ name VARCHAR(100) NOT NULL,
+ status INT NOT NULL,
+ ib_user_code VARCHAR(100) NOT NULL,
+ created_on DATETIME NOT NULL,
+ created_by INT NOT NULL,
+ updated_on DATETIME NOT NULL,
+ updated_by INT NOT NULL,
+ PRIMARY KEY (id)
+);

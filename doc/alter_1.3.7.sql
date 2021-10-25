@@ -1,4 +1,5 @@
 ALTER TABLE user_data ADD branch_id INT ,
+ALTER TABLE user_data ADD email VARCHAR(100)
 
 
 CREATE TABLE user_branch (

@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta name="decorator" content="content-new">
-	<title>Kas Non Tunai - Data User</title>
+	<title>Input IB - NabungDividen</title>
 		<!-- JAVA SCRIPT -->
 		<s:url var="remoteurl" action="UserData!processInput"/>
 		<script type="text/javascript">
@@ -65,7 +65,7 @@
 			                          <s:password maxlength="64" type="password" id="password" name="userData.userPassword" cssClass="form-control"  required="required"/>
 			                        </div>
 			                        <div class="form-group">
-			                          <label class="text-black"><b>Password</b></label>
+			                          <label class="text-black"><b>Konfirmasi Password</b></label>
 			                          <s:password maxlength="64" type="password" id="confirmPassword" name="confirmPassword" cssClass="form-control" required="required"/>
 			                        </div>
 			                    </s:if>
@@ -88,6 +88,10 @@
 		                        <div class="form-group">
 		                          <label class="text-black"><b>Phone Number</b></label>
 		                          <s:textfield maxlength="32" type="text" id="phoneNo" name="userData.phoneNo" cssClass="form-control" required="true" />
+		                        </div>
+		                        <div class="form-group">
+		                          <label class="text-black"><b>Email</b></label>
+		                          <s:textfield maxlength="100" type="text" id="email" name="userData.email" cssClass="form-control" required="true" />
 		                        </div>
 		                        <div class="form-group">
 		                          <label class="text-black"><b>User Level</b></label>

@@ -38,6 +38,8 @@ insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, me
 values (203, 2, 2, 3, 'icon_manage_user.png', 'Manage System Setting', 'SystemSetting', 'System Support Module', 0);
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
 values (204, 2, 2, 4, 'icon_manage_user.png', 'Manage Group Approval', 'GroupApproval', 'System Support Module', 0);
+insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
+values (205, 2, 2, 5, 'icon_manage_user.png', 'Manage Trading Account', 'MstTradeAccount', 'System Support Module', 0);
 
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
 values (301, 3, 2, 1, 'icon_manage_user.png', 'Maker', 'DistMaker', 'Operational Module', 0);

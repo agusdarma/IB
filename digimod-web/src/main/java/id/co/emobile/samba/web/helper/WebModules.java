@@ -10,6 +10,7 @@ public class WebModules {
 	public static final int MODULE_APPS_SETTING_SOURCE_ACCOUNT 		= 201;
 	public static final int MODULE_APPS_SETTING_USER_GROUP	 		= 202;
 	public static final int MODULE_SYSTEM_SUPPORT_SYSTEM_SETTING	= 203;
+	public static final int MODULE_MANAGE_TRADING_ACCOUNT			= 205;
 	
 	public static final int MODULE_APPS_OPERATIONAL_DIST_MAKER		= 301;
 	public static final int MODULE_APPS_OPERATIONAL_DIST_CHECKER	= 302;

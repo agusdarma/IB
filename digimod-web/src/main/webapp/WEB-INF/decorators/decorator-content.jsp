@@ -12,7 +12,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title><decorator:title default="Kasda Non Tunai" /></title>
+  <title><decorator:title default="NabungDividen - Introducing Broker" /></title>
 
   <!-- Custom fonts for this template-->
   <link href="<s:url value='/css/fontawesome.all.min.css'/>" rel="stylesheet" type="text/css">
