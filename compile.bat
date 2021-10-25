@@ -1,6 +1,6 @@
 @echo off
 
-set PATH_COMPILE=C:\Personal\Project\IB\jets-digimod
+set PATH_COMPILE=C:\Personal\Project\IB\IB
 echo Compile %1 using path %PATH_COMPILE%
 if not "%2"=="" echo Additional Param: client=%2
 
