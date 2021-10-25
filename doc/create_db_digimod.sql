@@ -263,6 +263,8 @@ CREATE TABLE master_trading_account
  trading_account_no VARCHAR(100) NOT NULL,
  trading_server VARCHAR(100) NOT NULL,
  name VARCHAR(100) NOT NULL,
+ password_trading VARCHAR(100) NOT NULL,
+ password_investor VARCHAR(100) NOT NULL,
  status INT NOT NULL,
  ib_user_code VARCHAR(100) NOT NULL,
  created_on DATETIME NOT NULL,
