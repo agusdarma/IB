@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+   
+<struts>
+
+	<package name="digimod-setting" extends="digimod-base">           		
+	
+		<action name="SourceAccount!*" method="{1}" class="id.co.emobile.samba.web.action.setting.SourceAccountAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/setting/source_account_input.jsp</result>
+			<result name="search">WEB-INF/pages/setting/source_account_search.jsp</result>
+			<result name="inputJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wrv</param>
+			</result>
+			<result name="searchJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wsr</param>
+			</result>
+		</action>
+		
+		<action name="UserGroup!*" method="{1}" class="id.co.emobile.samba.web.action.setting.UserGroupAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/setting/user_group_input.jsp</result>
+			<result name="search">WEB-INF/pages/setting/user_group_search.jsp</result>
+			<result name="inputJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wrv</param>
+			</result>
+			<result name="searchJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wsr</param>
+			</result>
+		</action>
+		
+		<action name="SystemSetting!*" method="{1}" class="id.co.emobile.samba.web.action.setting.SystemSettingAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/setting/system_setting_input.jsp</result>
+			<result name="search">WEB-INF/pages/setting/system_setting_search.jsp</result>
+			<result name="inputJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wrv</param>
+			</result>
+			<result name="searchJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wsr</param>
+			</result>
+		</action>
+        
+        <action name="GroupApproval!*" method="{1}" class="id.co.emobile.samba.web.action.setting.GroupApprovalAction">
+            <interceptor-ref name="webSecureStack" />
+            <result name="search">WEB-INF/pages/setting/group_approval_search.jsp</result>
+ 	        <result name="input">WEB-INF/pages/setting/group_approval_input.jsp</result>
+     	    <result name="inputJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wrv</param>
+			</result>
+			<result name="searchJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wsr</param>
+			</result>
+        </action>
+        
+	</package>
+</struts>

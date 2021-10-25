@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.UserBranchMapper">	
+	<insert id="createUserBranch" parameterType="UserBranch" useGeneratedKeys="true" keyProperty="id">
+	    insert into user_branch(branch_name, branch_desc,
+					created_by, created_on, updated_by, updated_on) 
+			values(#{branchName}, #{branchDesc},
+				 	#{createdBy}, #{createdOn}, #{updatedBy}, #{updatedOn}) 
+    </insert>
+    
+    <update id="updateUserBranch" parameterType="UserBranch">
+		update user_branch 
+		set branch_name = #{branchName},
+			branch_desc = #{branchDesc},
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn}
+		where id=#{id} 
+    </update>
+    
+    <sql id="_fieldUserBranch">
+        ub.id as id,
+		ub.branch_name as branchName,
+		ub.branch_desc as branchDesc,
+		ub.created_by as createdBy,
+		ub.created_on as createdOn,
+		ub.updated_by as updatedBy,
+		ub.updated_on as updatedOn
+    </sql>
+    
+    <select id="findAllUserBranch" resultType="UserBranch">
+		SELECT <include refid="_fieldUserBranch" />
+		FROM user_branch ub
+    	order by ub.branch_name asc
+    </select>
+    
+    <select id="findUserBranchById" resultType="UserBranch" parameterType="java.lang.Integer">
+		SELECT <include refid="_fieldUserBranch" />
+		FROM user_branch ub
+    	WHERE ub.id = #{value}
+    </select>
+    
+    <select id="findUserBranchByParam" resultType="UserBranch" parameterType="UserBranchParamVO">
+		SELECT <include refid="_fieldUserBranch" />
+			,@row_number:=@row_number+1 AS rowNum
+		FROM user_branch ub
+    		,(SELECT @row_number:=${rowStartMysql}) AS t
+    	<include refid="_sqlFindUserBranch" />    		
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+    
+    <select id="countUserBranchByParam" resultType="java.lang.Integer" parameterType="UserBranchParamVO">
+		SELECT count(*)
+		FROM user_branch ub
+    	<include refid="_sqlFindUserBranch" />
+    </select>
+    
+    <sql id="_sqlFindUserBranch">
+    	<where>
+			<if test="branchName != null and branchName.length() > 0">
+				AND upper(ug.branch_name) like #{branchNameLike}
+			</if>
+		</where>
+    </sql>
+    
+    
+    
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  
+<web-app id="digimod-web" version="2.4" 
+         xmlns="http://java.sun.com/xml/ns/j2ee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+-->
+<web-app id="digimod-web" 
+		 xmlns="http://java.sun.com/xml/ns/javaee"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	     version="3.0">
+	
+	<display-name>Digital Money Distribution Web</display-name>
+	
+	<description>Digital Money Distribution Web Application And Administration</description>
+	
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>digimod-web.root</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/database-context.xml 
+			/WEB-INF/service-context.xml 
+			<!--  /WEB-INF/bti-context.xml-->
+		</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>jmesaPreferencesLocation</param-name>
+		<param-value>WEB-INF/jmesa.properties</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>logbackConfigLocation</param-name>
+		<param-value>classpath:logback.xml</param-value>
+	</context-param>
+	
+	<!-- Filters -->
+	<filter>
+	    <filter-name>struts2-prepare</filter-name>
+	    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter</filter-class>
+	</filter>
+	
+	<filter>
+	    <filter-name>sitemesh</filter-name>
+	    <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
+	</filter>
+	
+	<filter>
+	    <filter-name>struts2-execute</filter-name>
+	    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>struts2-prepare</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+	    <filter-name>sitemesh</filter-name>
+	    <url-pattern>/*</url-pattern>
+	    <dispatcher>REQUEST</dispatcher>
+	    <dispatcher>FORWARD</dispatcher>
+	    <dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+	<filter-mapping>
+	    <filter-name>struts2-execute</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- Listeners -->
+	<listener>
+		<listener-class>it.stratosfera.commons.logback.LogbackConfigListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+    <listener>
+	    <listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
+	</listener> 
+	
+    <!-- Servlets -->
+     <servlet>
+    	<servlet-name>jspSupportServlet</servlet-name>
+    	<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
+    	<load-on-startup>5</load-on-startup>
+    </servlet>
+    <servlet>
+	<servlet-name>ImageServlet</servlet-name>
+		<servlet-class>net.sf.jasperreports.j2ee.servlets.ImageServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ImageServlet</servlet-name>
+		<url-pattern>/servlets/image</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+	<servlet-name>Captcha</servlet-name>
+<!-- <display-name>Captcha</display-name>  -->	
+	<servlet-class>id.co.emobile.samba.web.servlet.Captcha</servlet-class>
+	<init-param> 
+			<description>passing height</description> 
+			<param-name>height</param-name> 
+			<param-value>30</param-value> 
+		</init-param> 
+		<init-param> 
+			<description>passing height</description> 
+			<param-name>width</param-name> 
+			<param-value>120</param-value> 
+		</init-param>		
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Captcha</servlet-name>
+		<url-pattern>/Captcha.jpg</url-pattern>
+	</servlet-mapping>
+    <!-- 
+    <servlet>
+        <servlet-name>dwr</servlet-name>
+        <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+    	<servlet-name>jspSupportServlet</servlet-name>
+    	<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
+    	<load-on-startup>5</load-on-startup>
+    </servlet>
+    -->
+    
+    <!-- 
+    <servlet-mapping>
+        <servlet-name>dwr</servlet-name>
+        <url-pattern>/dwr/*</url-pattern>
+    </servlet-mapping>
+    -->
+    
+    <!-- session-timeout is in minute -->
+	<session-config>
+		<session-timeout>10</session-timeout>
+		<cookie-config>
+			<http-only>true</http-only>
+<!--
+			<secure>true</secure>
+-->
+		</cookie-config>
+	</session-config>
+	
+    <!-- Welcome file lists -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>

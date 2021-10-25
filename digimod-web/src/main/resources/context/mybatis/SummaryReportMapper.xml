@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.SummaryReportMapper">
+    
+	<insert id="insertSummaryDailyTrx" parameterType="GenerateSummaryVO">
+	    insert into summary_daily_trx(trx_date, trx_code, trx_group, bank_code, amount)
+		select #{trxDate}, trx_code, trx_group, bank_code, count(1) as trx_amount
+		from ${tableName}
+  		group by trx_code, trx_group, bank_code
+	</insert>
+	
+	<delete id="deleteSummaryDailyTrx" parameterType="GenerateSummaryVO">
+	    delete
+		from summary_daily_trx
+		where trx_date = #{trxDate}
+	</delete>
+	
+	<select id="findSummaryDailyTrx" resultType="SummaryDailyTrx" parameterType="GenerateSummaryVO">
+		select sdt.trx_date as trxDate,
+			sdt.trx_code as trxCode,
+			case 
+				when sdt.trx_group = 1 then 'Financial'
+				when sdt.trx_group = 2 then 'Non Financial'
+				else 'Other Transaction'
+			end as trxGroup,
+			sdt.bank_code as bankCode,
+			sdt.amount as amount
+			,@row_number:=@row_number+1 AS rowNum
+		from summary_daily_trx sdt
+			,(SELECT @row_number:=0) AS t
+		<where>
+			<if test="startDate != null">
+				AND sdt.trx_date >= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND sdt.trx_date &lt;= #{endDate}
+			</if>
+		</where>
+	</select>
+	
+	<select id="countSummaryDailyTrx" resultType="SummaryDailyTrx" parameterType="GenerateSummaryVO">
+		select count(1)
+		from summary_daily_trx sdt
+		<where>
+			<if test="startDate != null">
+				AND sdt.trx_date >= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND sdt.trx_date &lt;= #{endDate}
+			</if>
+		</where>
+	</select>
+	
+	<select id="checkTable" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(1)
+		FROM information_schema.tables x
+			inner join (select database() as db) y on x.table_schema = y.db
+		WHERE table_name = #{value}
+	</select>
+	
+</mapper>

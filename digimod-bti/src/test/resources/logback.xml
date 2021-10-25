@@ -1,0 +1,174 @@
+<configuration debug="true">
+  <!--  
+  <property name="WEB_ROOT" value="${mdr-router-trx.root}" />
+  -->
+  <property name="WEB_ROOT" value="./mdr-ussd-trx" />
+  
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <encoder>
+      <pattern>%date{HH:mm:ss.SSS} %-5level [%thread] %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender>
+	
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${WEB_ROOT}/WEB-INF/logs/server.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>${WEB_ROOT}/WEB-INF/logs/server-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+      <!-- Keep 5 periods based on daily rollover -->
+	  <maxHistory>5</maxHistory>  
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date{dd-MMM HH:mm:ss.SSS} %-5level [%thread] %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender> 
+  
+  <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="FILE" />
+  </appender>
+
+  <appender name="JETS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${WEB_ROOT}/WEB-INF/logs/jets.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>${WEB_ROOT}/WEB-INF/logs/jets-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+      <!-- Keep 5 periods based on daily rollover -->
+      <maxHistory>5</maxHistory>  
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date{dd-MMM HH:mm:ss.SSS} %-5level [%thread] %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender> 
+  
+  <appender name="ASYNC_JETS_FILE" class="ch.qos.logback.classic.AsyncAppender">
+  	<queueSize>1024</queueSize>
+  	<discardingThreshold>0</discardingThreshold>
+    <appender-ref ref="JETS_FILE" />
+  </appender>
+
+  <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${WEB_ROOT}/WEB-INF/logs/jets-sql.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>${WEB_ROOT}/WEB-INF/logs/jets-sql-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+      <!-- Keep 5 periods based on daily rollover -->
+      <maxHistory>5</maxHistory>  
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date{dd-MMM HH:mm:ss.SSS} %-5level [%thread] %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender> 
+  
+  <appender name="ASYNC_SQL_FILE" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="SQL_FILE" />
+  </appender>
+
+  <appender name="SMI_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${WEB_ROOT}/WEB-INF/logs/jets-smi.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>${WEB_ROOT}/WEB-INF/logs/jets-smi-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+      <!-- Keep 5 periods based on daily rollover -->
+      <maxHistory>5</maxHistory>  
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date{dd-MMM HH:mm:ss.SSS} %-5level [%thread] %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender> 
+  
+  <appender name="ASYNC_SMI_FILE" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="SMI_FILE" />
+  </appender>
+  
+  <appender name="BTI_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${WEB_ROOT}/WEB-INF/logs/jets-bti.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>${WEB_ROOT}/WEB-INF/logs/jets-bti-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+      <!-- Keep 5 periods based on daily rollover -->
+      <maxHistory>5</maxHistory>  
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date{dd-MMM HH:mm:ss.SSS} %-5level [%thread] %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender> 
+  
+  <appender name="ASYNC_BTI_FILE" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="BTI_FILE" />
+  </appender>
+
+  <logger name="smi.transaction" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_SMI_FILE" />
+    <appender-ref ref="ASYNC_JETS_FILE" />
+    <appender-ref ref="STDOUT" />
+  </logger>
+  
+  <logger name="bti.transaction" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_BTI_FILE" />
+    <appender-ref ref="ASYNC_JETS_FILE" />
+    <appender-ref ref="STDOUT" />
+  </logger>
+  
+  <logger name="com.emobile" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_JETS_FILE" />
+    <appender-ref ref="STDOUT" />
+  </logger>
+  
+  <logger name="org.springframework" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_FILE" />
+  </logger>
+  
+  <logger name="org.springframework.beans.factory" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_FILE" />
+  </logger>
+  
+  <logger name="org.springframework.jdbc" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_SQL_FILE" />
+  </logger>
+  
+  <logger name="com.emobile.mdr.ussd.lib.mapper" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_SQL_FILE" />
+  </logger>
+  
+  <logger name="java.sql" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_SQL_FILE" />
+  </logger>
+  
+  <root level="WARN">
+  	<appender-ref ref="ASYNC_FILE" />
+    <appender-ref ref="STDOUT" />
+  </root>
+  
+</configuration>

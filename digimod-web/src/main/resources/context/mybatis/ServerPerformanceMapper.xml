@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.ServerPerformanceMapper">
+	
+	<insert id="insertServerPerformance" parameterType="ServerPerformance">
+	    insert into server_performance(server_name, cpu_usage, memory_usage, 
+	    			disk_available, server_time, total_trx)
+			values(#{serverName}, #{cpuUsage}, #{memoryUsage}, 
+					#{diskAvailable}, #{serverTime}, #{totalTrx}) 
+    </insert>		
+	
+	<select id="findTotalTrx" resultType="java.lang.Integer" parameterType="ServerPerformance">
+		select jumlah 
+		from (
+			SELECT count(1) as jumlah , DATE_FORMAT(created_on, '%d/%m/%Y %H:%i') as tanggal
+			FROM ${tableName} 
+			where MINUTE(created_on) = MINUTE(#{createdOn}) and HOUR(created_on) =  HOUR(#{createdOn})
+			group by YEAR(created_on), MONTH(created_on), DATE(created_on), HOUR(created_on), MINUTE(created_on)
+		) x 
+		order by jumlah asc
+    </select>
+		
+</mapper>

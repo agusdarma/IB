@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+	<!-- BTI Sequence Generator -->
+	<bean id="btiSequenceManager"
+		class="com.emobile.jets.mmbs.lib.service.SequenceGeneratorService"
+			init-method="initService">
+		<property name="appName" value="BTI_SEQ" />
+		<property name="range" value="1000" />
+		<property name="sequenceStrategy">
+			<bean class="com.emobile.jets.mmbs.lib.sequence.DigitsSequenceStrategy">
+				<property name="limit" value="999999" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- BTI Sequence Reference Number -->
+	<bean id="btiSequenceRefNumber"
+		class="com.emobile.jets.mmbs.lib.service.SequenceGeneratorService"
+			init-method="initService">
+		<property name="appName" value="REF_NUM" />
+		<property name="range" value="1000" />
+		<property name="sequenceStrategy">
+			<bean class="com.emobile.jets.mmbs.lib.sequence.DatePrefixSequenceStrategy">
+				<property name="limit" value="999999" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Logic Section -->
+	<bean id="logicTemplate" abstract="true"
+			class="com.emobile.jets.mmbs.bti.logic.HostBtiLogic">
+		<property name="terminalId" value="9902001" />
+	</bean>
+	
+	<bean id="accountBalanceLogic" parent="logicTemplate"
+		class="com.emobile.jets.mmbs.bti.logic.AccountBalanceLogic" scope="prototype" />
+	
+	<bean id="changePinLogic" parent="logicTemplate"
+		class="com.emobile.jets.mmbs.bti.logic.ChangePinLogic" scope="prototype" />
+	
+	<bean id="registrationOnlineLogic" parent="logicTemplate"
+		class="com.emobile.jets.mmbs.bti.logic.RegistrationOnlineLogic" scope="prototype" />
+	
+	<!-- Logic Factory -->
+	<bean id="isoBtiLogicFactory" class="com.emobile.jets.mmbs.bti.logic.IsoLogicFactory" scope="prototype">
+		<property name="logicMap">
+			<map>
+				<entry key="${accountBalance.code}" value-ref="accountBalanceLogic" />				
+				<entry key="${changePin.code}" value-ref="changePinLogic" />	
+				<entry key="${onlineRegistration.code}" value-ref="registrationOnlineLogic" />
+				<!-- <entry key="${billPayment.code}" value-ref="billPaymentLogic" />
+				<entry key="${airtimeRefill.code}" value-ref="airtimeRefillLogicStub" />
+				<entry key="${forexInfo.code}" value-ref="forexInfoLogic" />
+				<entry key="${infoSav.code}" value-ref="interestInfoLogic" />
+				<entry key="${infoDep.code}" value-ref="interestInfoLogic" />
+				<entry key="${webAccountInfo.code}" value-ref="registrationLogicStub" />				
+				<entry key="${webResetPin.code}" value-ref="changePinLogicStub" />
+				<entry key="${webTerminate.code}" value-ref="changePinLogicStub" /> -->
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="btiManager" class="com.emobile.jets.mmbs.bti.IsoBtiManager" 
+			init-method="startManager" destroy-method="stopManager">
+		<property name="logicFactory" ref="isoBtiLogicFactory" />
+		<property name="pipelineFactory">
+			<bean class="com.emobile.jets.mmbs.lib.netty.SumutPipelineFactory" />
+		</property>
+		<property name="socketTimeout" value="5000" />
+		<property name="listConfig">
+			<list>
+				<!-- format id, amount, ip, port -->
+				<value>BTI1,5,127.0.0.1,6900</value>
+				<!--  
+				<value>BTI2,20,127.0.0.1,8001</value>
+				<value>BTI3,20,127.0.0.1,8002</value>
+				-->
+			</list>
+		</property>		
+	</bean>
+</beans>

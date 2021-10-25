@@ -1,0 +1,80 @@
+.text-golden {
+  color: #F7C600;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.text-dark-blue {
+  color: #00568B;
+}
+
+.text-grey {
+  color: #696969;
+}
+
+.text-black {
+  color: #404040;
+}
+
+.bg-blue-gradient {
+  background-image: linear-gradient(#396afc, #2948ff);
+}
+
+.bg-blue-gradient-2 {
+/*	background: url(https://trademax-prod-public-resources.oss-accelerate.aliyuncs.com/images/portal-background-signup-desktop.jpg) center center / cover no-repeat; */
+	background: url(../img/portal-background-signup-desktop.jpg) center center / cover no-repeat;
+	
+  /*
+	background-image: linear-gradient(#E6DADA, #274046);
+	*/ 
+  /* background: url(https://trademax-prod-public-resources.oss-accelerate.aliyuncs.com/images/portal-background-signup-desktop.jpg) center center / cover no-repeat;
+  display: none;
+  */
+}
+
+.bg-dark-blue {
+  background-color: #00568B;
+}
+
+.bg-blue {
+  background-color: #0080B9;
+}
+
+.bg-light-blue {
+  background-color: #00A2DE;
+}
+
+.bg-gray {
+  background-color: #E6E6E6;
+}
+
+.bg-mocca {
+  background-color: #807C6E;
+}
+
+.bg-golden {
+  background-color: #F7C600;
+}
+
+.bg-orange {
+  background-color: #ED8000;
+}
+
+.bg-green {
+  background-color: #85B500;
+}
+
+.bg-red {
+  background-color: #FF3939;
+}
+
+.border-blue {
+  border: solid 2px #0080B9;
+}
+
+.suffix-icon{
+    position : absolute;
+    right : 0;
+}

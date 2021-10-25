@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    Copyright 2010 The myBatis Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.LookupMapper">
+    
+    <select id="findLookupAll" resultType="Lookup">
+        select lookup_cat as lookupCat,
+        	lookup_value as lookupValue,
+        	lookup_desc as lookupDesc,
+        	lookup_order as lookupOrder
+        from lookup_data 
+        order by lookup_order asc
+    </select>
+
+    <select id="findAllTrxCode" resultType="Lookup">
+    	select trx_code as lookupValue, 
+        	   trx_code_desc as lookupDesc
+        from trx_code_info
+    </select>
+    
+    <select id="findAllTpda" resultType="Lookup">
+    	select distinct ld.lookup_desc as lookupDesc, 
+        	   ld.lookup_desc as lookupValue
+        from lookup_data ld
+        where ld.lookup_cat = 6
+    </select>
+    
+    <select id="findAllTrxCodeCW" resultType="Lookup">
+    	select trx_code as lookupValue, 
+       	   	   trx_code_desc as lookupDesc
+        from trx_code_info
+        where group_web_chart = 'Cardwork'
+    </select>
+    
+    <select id="findTrxGroup" resultType="lookup">
+        select distinct trx_group as lookupValue, trx_group as lookupDesc
+        from trx_code_info
+    </select>
+    
+    <select id="findTrxCodeByTrxGroup" resultType="Lookup" parameterType="java.lang.String">
+        select trx_code as lookupValue, trx_code_desc as lookupDesc
+        from trx_code_info
+        where trx_group=#{value}
+    </select>
+    
+    <select id="findC81" resultType="Lookup">
+        select lookup_value as lookupValue, lookup_desc as lookupDesc
+		from lookup_data
+		where lookup_cat=2 and (lookup_value like 'C8%'
+			or lookup_value in ('C901', 'C902', 'C903', 'C904', 'C905', 'C906', 'C907', 'C931'))			
+    </select>
+    
+    <select id="findC81Edit" resultType="Lookup">
+        select lookup_value as lookupValue, lookup_desc as lookupDesc
+		from lookup_data
+		where lookup_cat=2 and lookup_value like 'C8%'
+    </select>
+    
+    <update id="updateLookupData" parameterType="Lookup">
+        update lookup_data
+        set lookup_desc = #{lookupDesc}
+        where lookup_value = #{lookupValue} and lookup_cat = 2
+    </update>
+    
+    <update id="updateWholeLookupData" parameterType="Lookup">
+        update lookup_data
+        set lookup_desc = #{lookupDesc},
+			lookup_cat = #{lookupCat},
+			lookup_value = #{lookupValue},
+			lookup_order = #{lookupOrder},
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn}        
+        where lookup_value = #{lookupValueOld} and lookup_cat = #{lookupCatOld}
+    </update>
+    
+    <insert id="insertLookupData" parameterType="Lookup">
+		insert into 
+			lookup_data(lookup_cat, lookup_value, lookup_desc, lookup_order, updated_on, updated_by) 
+			values(#{lookupCat}, #{lookupValue}, #{lookupDesc}, #{lookupOrder}, #{updatedOn},  #{updatedBy}) 
+    </insert>
+    
+    <select id="findLookupByParam" resultType="Lookup" parameterType="LookupDataParamVO">
+        select ld.lookup_cat as lookupCat,
+        	ld.lookup_value as lookupValue,
+        	ld.lookup_desc as lookupDesc,
+        	ld.lookup_order as lookupOrder,
+        	ld.updated_on as updatedOn,
+        	ld.updated_by as updatedBy,
+        	ud.user_name as updatedByDisplay
+        from lookup_data ld
+        	left join user_data ud on ld.updated_by = ud.id
+        <include refid="_sqlLookupWhere" />
+        ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+    
+    <select id="countLookupByParam" resultType="java.lang.Integer" parameterType="LookupDataParamVO">
+        select count(1)
+        from lookup_data ld
+        	left join user_data ud on ld.updated_by = ud.id
+        <include refid="_sqlLookupWhere" />
+    </select>
+    
+    <sql id="_sqlLookupWhere">
+    	<where>
+			<if test="lookupCat != 0">
+				AND ld.lookup_cat = #{lookupCat}
+			</if>
+			<if test="lookupValue != null and lookupValue.length() > 0">
+			    AND ld.lookup_value = #{lookupValue}
+			</if>
+		</where>
+    </sql>
+    
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+    	<!-- changes from the defaults -->
+        <setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+       
+    <typeAliases>
+    <!-- <typeAlias alias="UserLevelMenuVO" type="com.emobile.gateway.web.data.UserLevelMenuVO" />
+    
+    	<typeAlias alias="UserInfoParamVO" type="com.emobile.gateway.web.data.param.UserInfoParamVO" /> -->
+    
+    	<package name="id.co.emobile.samba.web.entity"/>	
+    	<package name="id.co.emobile.samba.web.data"/>	
+    	<package name="id.co.emobile.samba.web.data.param"/>	
+    	
+	</typeAliases>
+
+</configuration>

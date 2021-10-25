@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    Copyright 2010 The myBatis Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.PassHistoryMapper">
+    
+    <insert id="createPassHistory" parameterType="PasswordHistory" useGeneratedKeys="true" keyProperty="U5PK">
+    	insert into MXOPSW(U5UID, U5SEQ, U5PSW1, U5PSW2, U5PSW3, U5PSW4, U5PSW5, U5PSW6) 
+    	values(#{userId}, '1', #{passHistory1,javaType=java.lang.String,jdbcType=VARCHAR},
+    	 #{passHistory2,javaType=java.lang.String,jdbcType=VARCHAR},
+    	 #{passHistory3,javaType=java.lang.String,jdbcType=VARCHAR},
+    	 #{passHistory4,javaType=java.lang.String,jdbcType=VARCHAR},
+    	 #{passHistory5,javaType=java.lang.String,jdbcType=VARCHAR},
+    	 #{passHistory6,javaType=java.lang.String,jdbcType=VARCHAR})
+    </insert>
+    
+        <update id="updatePassHistory" parameterType="PasswordHistory">
+    	update MXOPSW set 
+			U5PSW1 = #{passHistory1,javaType=java.lang.String,jdbcType=VARCHAR},
+			U5PSW2 = #{passHistory2,javaType=java.lang.String,jdbcType=VARCHAR},
+			U5PSW3 = #{passHistory3,javaType=java.lang.String,jdbcType=VARCHAR},
+			U5PSW4 = #{passHistory4,javaType=java.lang.String,jdbcType=VARCHAR},
+			U5PSW5 = #{passHistory5,javaType=java.lang.String,jdbcType=VARCHAR},
+			U5PSW6 = #{passHistory6,javaType=java.lang.String,jdbcType=VARCHAR}
+        where U5UID = #{userId}
+    </update>
+    
+    <select id="findPassHistoryByUserId" resultType="PasswordHistory" parameterType="java.lang.String">
+        select rtrim(U5UID) as userId,
+		rtrim(U5PSW1) as passHistory1,
+		rtrim(U5PSW2) as passHistory2,
+		rtrim(U5PSW3) as passHistory3,
+		rtrim(U5PSW4) as passHistory4,
+		rtrim(U5PSW5) as passHistory5,
+		rtrim(U5PSW6) as passHistory6
+        from MXOPSW
+        where U5UID = #{value} 
+    </select>
+</mapper>

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.ReportMapper">
+
+    <select id="findAdvertisingReport" resultType="Advertising" parameterType="ReportParamVO" >
+		select 
+      		a.id as id,
+			a.ads_name as adsName,
+			a.ads_location as adsLocation,
+			a.display_image as displayImage,
+			a.full_image as fullImage,
+			a.text_content as textContent,
+			a.longitude as longitude,
+			a.latitude as latitude,
+			a.ads_url as adsUrl,
+			a.radius as radius,
+			a.bank_type as bankType,
+			a.hit_count as hitCount,
+			a.period_start as periodStart,
+			a.period_end as periodEnd,
+			a.created_by as createdBy,
+			a.created_on as createdOn,
+			a.updated_by as updatedBy,
+			a.updated_on as updatedOn,
+			ud.user_name as createdByDisplay,
+			ud1.user_name as updatedByDisplay,
+			ld.lookup_desc as adsLocationDisplay,
+			ld1.lookup_desc as bankTypeDisplay,
+			case a.bank_type 
+			  when 1 then 'all bank'
+			  else b.bank_name
+			end as bankName
+			,@row_number:=@row_number+1 AS rowNum
+		FROM advertising a
+			left join user_data ud on a.created_by = ud.id
+			left join user_data ud1 on a.updated_by = ud1.id
+			left join lookup_data ld on ld.lookup_cat = 8 and ld.lookup_value = a.ads_location
+			left join lookup_data ld1 on ld1.lookup_cat = 9 and ld1.lookup_value = a.bank_type
+			left join advertising_bank ab on a.id = ab.advertising_id	
+			left join bank b on ab.bank_id = b.id	
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+    	<include refid="_sqlFindAdvertising" />
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+
+	<select id="countAdvertisingReport" resultType="java.lang.Integer" parameterType="ReportParamVO" >
+        SELECT count(1)
+		FROM advertising a
+			left join user_data ud on a.created_by = ud.id
+			left join user_data ud1 on a.updated_by = ud1.id
+			left join lookup_data ld on ld.lookup_cat = 8 and ld.lookup_value = a.ads_location
+			left join lookup_data ld1 on ld1.lookup_cat = 9 and ld1.lookup_value = a.bank_type
+			left join advertising_bank ab on a.id = ab.advertising_id	
+			left join bank b on ab.bank_id = b.id
+    	<include refid="_sqlFindAdvertising" />
+    </select>
+        
+	<sql id="_sqlFindAdvertising">
+    	<where>
+			<if test="periodStart != null and periodEnd != null">
+					and (#{periodStart} between a.period_start and a.period_end or 
+					a.period_start between #{periodStart} and #{periodEnd} or
+					a.period_end between #{periodStart} and #{periodEnd}
+				)
+			</if>
+			<if test="periodStart != null and periodEnd == null">
+				AND #{periodStart} between a.period_start and a.period_end
+			</if>
+			<if test="periodEnd != null and periodStart == null">
+				AND #{periodEnd} between a.period_start and a.period_end
+			</if>			
+			<if test="adsName != null and adsName.length() > 0">
+				AND a.ads_name &lt;= #{adsName}
+			</if>
+			<if test="adsLocation != 0">
+				AND a.ads_location &lt;= #{adsLocation}
+			</if>
+			<if test="bankId != 0">
+				AND (ab.bank_id = #{bankId} or a.bank_type = 1 )
+			</if>
+		</where>
+    </sql>
+	
+	<select id="findAppsUserActivity" resultType="AppsUserActivity" parameterType="ReportParamVO">
+		select ua.id as id,
+			ua.phone_no as phoneNo,
+			ua.apps_type as appsType,
+			ua.activity as activity,
+			ua.created_on as createdOn
+			,@row_number:=@row_number+1 AS rowNum
+		FROM apps_user_activity ua
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+    	<include refid="_sqlFindAppsUserActivity" />
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+
+	<select id="countAppsUserActivity" resultType="java.lang.Integer" parameterType="ReportParamVO" >
+        SELECT count(1)
+		FROM apps_user_activity ua
+    	<include refid="_sqlFindAppsUserActivity" />
+    </select>
+        
+	<sql id="_sqlFindAppsUserActivity">
+    	<where>
+			<if test="startDate != null">
+				AND ua.created_on >= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND ua.created_on &lt;= #{endDate}
+			</if>
+			<if test="phoneNo != null and phoneNo.length() > 0">
+				AND ua.phone_no like #{phoneNoLike}
+			</if>
+			<!-- <if test="appsType != 0">
+				AND lower(ua.apps_type) = #{appsType}
+			</if> -->
+		</where>
+    </sql>
+    
+	<select id="findDailyTrx" resultType="TrxLogH" parameterType="ReportParamVO" >
+		select th.syslogno as syslogno,
+			th.phone_no as phoneNo,
+			th.bank_code as bankCode,
+			th.trx_code as trxCode,
+			th.trx_group as trxGroup,
+			th.client_ref as clientRef,
+			th.last_rc as lastRc,
+			th.last_state as lastState,
+			th.srac as srac,
+			th.trx_amount as trxAmount,
+			th.biller_no as billerNo,
+			th.bill_acc_no as billerAccNo,
+			th.sys_message as sysMessage,
+			th.received_time as receivedTime,
+			th.created_on as createdOn,
+			th.updated_on as updatedOn,
+			b.bank_name as bankName
+			,@row_number:=@row_number+1 AS rowNum
+		FROM ${tableName} th
+			left join bank b on th.bank_code = b.bank_code
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+		<include refid="_sqlFindDailyTrx" />
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+
+	<select id="countDailyTrx" resultType="java.lang.Integer" parameterType="ReportParamVO" >
+        SELECT count(1)
+		FROM ${tableName} th
+			left join bank b on th.bank_code = b.bank_code
+		<include refid="_sqlFindDailyTrx" />
+    </select>
+    
+	<sql id="_sqlFindDailyTrx">
+    	<where>
+			<if test="phoneNo != null and phoneNo.length() > 0">
+				AND th.phone_no like #{phoneNoLike}
+			</if>
+			<if test='trxCode != "0"'>
+				AND th.trx_code = #{trxCode}
+			</if>
+			<if test="bankCode != 0">
+				AND th.bank_code = #{bankCode}
+			</if>
+		</where>
+    </sql>
+
+	<select id="findSummaryDailyTrx" resultType="SummaryDailyTrx" parameterType="ReportParamVO" >
+		select trxCode, trxGroup, bankCode, amount, bankName
+			,@row_number:=@row_number+1 AS rowNum
+		from 
+			(select sdt.trx_code as trxCode,
+				case 
+					when sdt.trx_group = 1 then 'Financial'
+					when sdt.trx_group = 2 then 'Non Financial'
+					else 'Other Transaction'
+				end as trxGroup,
+				sdt.bank_code as bankCode,
+				sum(sdt.amount) as amount,
+				b.bank_name as bankName
+			from summary_daily_trx sdt
+				left join bank b on sdt.bank_code = b.bank_code
+			<include refid="_sqlFindSummaryTrx" />
+			group by sdt.trx_code, sdt.trx_group, b.bank_name
+			) x
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+
+	<select id="countSummaryDailyTrx" resultType="java.lang.Integer" parameterType="ReportParamVO" >
+		select count(1)
+		from 
+		(select sdt.trx_code as trxCode,
+			case 
+				when sdt.trx_group = 1 then 'Financial'
+				when sdt.trx_group = 2 then 'Non Financial'
+				else 'Other Transaction'
+			end as trxGroup,
+			sdt.bank_code as bankCode,
+			sum(sdt.amount) as amount,
+			b.bank_name as bankName
+		from summary_daily_trx sdt
+			left join bank b on sdt.bank_code = b.bank_code
+		<include refid="_sqlFindSummaryTrx" />
+		group by sdt.trx_code, sdt.trx_group, b.bank_name
+		) x
+    </select>
+    
+	<sql id="_sqlFindSummaryTrx">
+    	<where>
+			<if test="startDate != null">
+				AND sdt.trx_date >= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND sdt.trx_date &lt;= #{endDate}
+			</if>
+			<if test="bankCode != 0">
+				AND sdt.bank_code = #{bankCode}
+			</if>
+			<if test='trxCode != "0"'>
+				AND sdt.trx_code = #{trxCode}
+			</if>
+			<if test="trxGroup == 1">
+				AND sdt.trx_group = 0
+			</if>			
+			<if test="trxGroup == 2">
+				AND sdt.trx_group = 1
+			</if>						
+		</where>
+    </sql>
+	
+	<select id="findAllMbankingUser" resultType="MbankingUserVO" parameterType="ReportParamVO" >
+		select phoneNo, trxDate
+			,@row_number:=@row_number+1 AS rowNum
+		from (
+			select ug.phone_no as phoneNo, ug.trx_date as trxDate
+			from user_growth ug
+			<include refid="_sqlFindAllMbankingUser" />
+			) x
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+	
+	<select id="countAllMbankingUser" resultType="java.lang.Integer" parameterType="ReportParamVO" >
+		select count(1)
+		from user_growth ug
+		<include refid="_sqlFindAllMbankingUser" />		
+    </select>
+    
+	<sql id="_sqlFindAllMbankingUser">
+    	<where>
+			<if test="startDate != null">
+				AND ug.trx_date >= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND ug.trx_date &lt;= #{endDate}
+			</if>						
+		</where>
+    </sql>
+   	
+	<select id="findRegisteredMbankingUser" resultType="MbankingUserVO" parameterType="ReportParamVO" >
+		select phoneNo, trxDate
+			,@row_number:=@row_number+1 AS rowNum
+		from (
+			select afh.phone_no as phoneNo, afh.created_on as trxDate
+			from apps_fav_header afh
+			<include refid="_sqlFindRegisteredMbankingUser" />
+			) x
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+	
+	<select id="countRegisteredMbankingUser" resultType="java.lang.Integer" parameterType="ReportParamVO" >
+		select count(1)
+		from apps_fav_header afh
+		<include refid="_sqlFindRegisteredMbankingUser" />
+    </select>
+    
+	<sql id="_sqlFindRegisteredMbankingUser">
+    	<where>
+			<if test="periodStart != null">
+				AND afh.created_on >= #{startDate}
+			</if>
+			<if test="periodEnd != null">
+				AND afh.created_on &lt;= #{endDate}
+			</if>						
+		</where>
+    </sql>
+    
+	<select id="findNotRegisteredMbankingUser" resultType="MbankingUserVO" parameterType="ReportParamVO" >
+		select phoneNo, trxDate
+			,@row_number:=@row_number+1 AS rowNum
+		from (
+			select afh.phone_no as phoneNo, afh.created_on as trxDate
+			from user_growth ug
+				left join apps_fav_header afh on ug.phone_no = afh.phone_no
+			<include refid="_sqlFindRegisteredMbankingUser" />
+			) x
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+	
+	<select id="countNotRegisteredMbankingUser" resultType="java.lang.Integer" parameterType="ReportParamVO" >
+		select count(1)
+		from user_growth ug
+			left join apps_fav_header afh on ug.phone_no = afh.phone_no
+		<include refid="_sqlFindRegisteredMbankingUser" />
+    </select>
+    
+	<sql id="_sqlFindNotRegisteredMbankingUser">
+    	<where>
+    	    	AND afh.phone_no is null
+			<if test="periodStart != null">
+				AND ug.trx_date >= #{startDate}
+			</if>
+			<if test="periodEnd != null">
+				AND ug.trx_date &lt;= #{endDate}
+			</if>						
+		</where>
+    </sql>
+	
+</mapper>

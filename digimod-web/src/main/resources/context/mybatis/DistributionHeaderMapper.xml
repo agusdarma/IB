@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    Copyright 2010 The myBatis Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.DistributionHeaderMapper">
+    
+    <insert id="createDistributionHeader" parameterType="DistributionHeader">
+    	insert into distribution_header(syslogno, group_id, group_name, file_data, file_assignment, source_account_id, 
+    		phone_no, srac_number,srac_name, maker_remarks, checker_remarks, callback_remarks, approval_remarks, status,
+    		uploaded_amount, uploaded_value, uploaded_by, uploaded_on,trx_code,
+    		checked_by, checked_on, callback_by, callback_on, approved_by, approved_on,
+    		process_success, process_failed, process_value, process_started, process_finished)
+    	values(#{sysLogNo}, #{groupId}, #{groupName}, #{fileData}, #{fileAssignment}, #{sourceAccountId}, 
+    		#{phoneNo}, #{sracNumber},#{sracName}, #{makerRemarks}, #{checkerRemarks},  #{callbackRemarks}, #{approvalRemarks}, #{status},
+    		#{uploadedAmount}, #{uploadedValue}, #{uploadedBy}, #{uploadedOn},#{trxCode},
+    		#{checkedBy}, #{checkedOn}, #{callbackBy}, #{callbackOn}, #{approvedBy}, #{approvedOn},
+    		#{processSuccess}, #{processFailed}, #{processValue}, #{processStarted}, #{processFinished}
+    	)
+    </insert>
+    
+    <update id="updateDistributionHeader" parameterType="DistributionHeader">
+    	update distribution_header set
+    		checker_remarks=#{checkerRemarks}, 
+    		callback_remarks=#{callbackRemarks}, 
+    		approval_remarks=#{approvalRemarks}, 
+    		status=#{status},
+    		checked_by=#{checkedBy}, 
+    		checked_on=#{checkedOn}, 
+    		callback_by=#{callbackBy}, 
+    		callback_on=#{callbackOn}, 
+    		approved_by=#{approvedBy}, 
+    		approved_on=#{approvedOn},
+    		process_success=#{processSuccess}, 
+    		process_failed=#{processFailed}, 
+    		process_value=#{processValue}, 
+    		process_started=#{processStarted}, 
+    		process_finished=#{processFinished}
+    	where syslogno=#{sysLogNo}
+    </update>
+    
+    <sql id="_fieldDistributionHeader">
+    	h.syslogno as sysLogNo, 
+    	h.group_id as groupId,
+    	h.group_name as groupName,
+    	h.file_data as fileData, 
+    	h.file_assignment as fileAssignment, 
+    	h.source_account_id as sourceAccountId, 
+    	h.phone_no as phoneNo, 
+    	h.srac_number as sracNumber,
+    	h.srac_name as sracName, 
+    	h.maker_remarks as makerRemarks, 
+    	h.checker_remarks as checkerRemarks, 
+    	h.callback_remarks as callbackRemarks, 
+    	h.approval_remarks as approvalRemarks, 
+    	h.status as status,
+    	h.uploaded_amount as uploadedAmount, 
+    	h.uploaded_value as uploadedValue, 
+    	h.uploaded_by as uploadedBy, 
+    	h.uploaded_on as uploadedOn,
+    	h.checked_by as checkedBy, 
+    	h.checked_on as checkedOn, 
+    	h.callback_by as callbackBy, 
+    	h.callback_on as callbackOn, 
+    	h.approved_by as approvedBy, 
+    	h.approved_on as approvedOn,
+    	h.process_success as processSuccess, 
+    	h.process_failed as processFailed, 
+    	h.process_value as processValue, 
+    	h.process_started as processStarted, 
+    	h.process_finished as processFinished,
+    	
+    	l.lookup_desc as statusDisplay,
+    	uu.user_code as uploadedUserCode,
+    	uu.user_name as uploadedUserName,
+    	uc.user_code as checkedUserCode,
+    	uc.user_name as checkedUserName,
+    	ub.user_code as callbackUserCode,
+    	ub.user_name as callbackUserName,
+    	ua.user_code as approvedUserCode,
+    	ua.user_name as approvedUserName
+    </sql>
+    
+    <sql id="_fromDistributionHeader">
+    	distribution_header h
+    	left join lookup_data l on h.status=l.lookup_value and l.lookup_cat=2
+    	left join user_data uu on h.uploaded_by=uu.id
+    	left join user_data uc on h.checked_by=uc.id
+    	left join user_data ub on h.callback_by=ub.id
+    	left join user_data ua on h.approved_by=ua.id
+    </sql>
+    
+    <select id="findDistributionHeaderBySysLogNo" resultType="DistributionHeader" parameterType="String">
+        select <include refid="_fieldDistributionHeader" />
+        from <include refid="_fromDistributionHeader" />
+        where h.syslogno=#{sysLogNo}
+    </select>
+    
+    <select id="findDistributionHeaderByFileData" resultType="DistributionHeader" parameterType="String">
+        select <include refid="_fieldDistributionHeader" />
+        from <include refid="_fromDistributionHeader" />
+        where h.file_data=#{value}
+    </select>
+
+    <select id="findDistributionHeaderByFileAssignment" resultType="DistributionHeader" parameterType="String">
+        select <include refid="_fieldDistributionHeader" />
+        from <include refid="_fromDistributionHeader" />
+        where h.file_assignment=#{value}
+    </select>
+    
+    <select id="findDistributionHeaderByGroupAndStatus" resultType="DistributionHeader" parameterType="java.util.Map">
+        select <include refid="_fieldDistributionHeader" />
+        from <include refid="_fromDistributionHeader" />
+        where h.group_id=#{groupId} and h.status=#{status}
+    </select>
+    
+    <select id="findDistributionHeaderAll" resultType="DistributionHeader" parameterType="ReportParamVO">
+        select <include refid="_fieldDistributionHeader" />
+        from <include refid="_fromDistributionHeader" />
+        <include refid="_sqlSelectionHeader" />        
+        order by h.syslogno desc
+    </select>
+    
+    <select id="findDistributionHeaderByGroup" resultType="DistributionHeader" parameterType="ReportParamVO">
+        select <include refid="_fieldDistributionHeader" />
+        from <include refid="_fromDistributionHeader" />
+        where h.group_id in
+        <foreach item="item" index="index" collection="listGroupId" open="(" separator="," close=")">
+        	#{item}
+        </foreach>
+        <if test="startDate != null">
+		 		and h.uploaded_on >= #{startDate}
+			</if>
+			<if test="endDate != null">
+		 		and h.uploaded_on &lt;= #{endDate}
+			</if>    
+			<if test="trxCode != null and trxCode.length() > 0">
+				and upper(h.trx_code) like #{trxCode}
+			</if>   
+			<if test="sysNumber != null and sysNumber.length() > 0">
+				and upper(h.syslogno) like #{sysNumber}
+			</if>
+			<if test="sracNo != null and sracNo.length() > 0">
+				and upper(h.srac_number) like #{sracNo}
+			</if>
+        order by h.syslogno desc
+    </select>
+    
+    <sql id="_sqlSelectionHeader">
+		<where>
+		    <if test="startDate != null">
+		 		and h.uploaded_on >= #{startDate}
+			</if>
+			<if test="endDate != null">
+		 		and h.uploaded_on &lt;= #{endDate}
+			</if>    
+			<if test="trxCode != null and trxCode.length() > 0">
+				and upper(h.trx_code) like #{trxCode}
+			</if>
+			<if test="sysNumber != null and sysNumber.length() > 0">
+				and upper(h.syslogno) like #{sysNumber}
+			</if>
+			<if test="sracNo != null and sracNo.length() > 0">
+				and upper(h.srac_number) like #{sracNo}
+			</if>
+			
+			
+		</where>
+	</sql>
+    
+</mapper>

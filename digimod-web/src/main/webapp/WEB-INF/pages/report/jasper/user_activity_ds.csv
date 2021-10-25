@@ -1,0 +1,4 @@
+id,userDataId,userCode,userName,action,moduleName,changedAttribute,description,targetTable,targetId,ipAddress,createdOn
+1,1,root,ROOT,login,LOGIN,,Login,user_data,1,127.0.0.1,2020-03-05 11:42:26
+2,1,root,ROOT,logout,LOGOUT,,Logout,user_data,1,127.0.0.1,2020-03-05 11:43:31
+

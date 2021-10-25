@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.AppsTrxTypeMapper">	
+	<insert id="createAppsTrxType" parameterType="AppsTrxType" useGeneratedKeys="true" keyProperty="id">
+	    insert into apps_trx_type(trx_name, trx_group, activity_type,
+	    		created_by, created_on, updated_by, updated_on, version_status) 
+			values(#{trxName}, #{trxGroup}, #{activityType},
+				#{createdBy}, #{createdOn}, #{updatedBy}, #{updatedOn}, #{versionStatus}) 
+    </insert>
+    
+    <update id="updateAppsTrxType" parameterType="AppsTrxType">
+		update apps_trx_type 
+		set trx_name = #{trxName},
+			trx_group = #{trxGroup},
+			activity_type = #{activityType},
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn},
+			version_status = #{versionStatus}
+		where id=#{id} 
+    </update>
+    
+    <sql id="_sqlAppsTrxType">
+        att.id as id,
+		att.trx_name as trxName,
+		att.trx_group as trxGroup,
+		att.activity_type as activityType,
+		att.created_by as createdBy,
+		att.created_on as createdOn,
+		att.updated_by as updatedBy,
+		att.updated_on as updatedOn,
+		ud.user_name as createdByDisplay,
+		ud1.user_name as updatedByDisplay,
+		ld.lookup_desc as trxGroupDisplay
+    </sql>
+    
+    <select id="findAllAppsTrxType" resultType="AppsTrxType">
+		SELECT <include refid="_sqlAppsTrxType" />
+		FROM apps_trx_type att
+			left join user_data ud on att.created_by = ud.id
+    		left join user_data ud1 on att.updated_by = ud1.id
+    		left join lookup_data ld on ld.lookup_cat = 5 and ld.lookup_value = att.trx_group
+    	order by att.trx_name asc
+    </select>
+    
+    <select id="findAppsTrxTypeByTrxName" resultType="AppsTrxType" parameterType="java.lang.String">
+		SELECT <include refid="_sqlAppsTrxType" />
+		FROM apps_trx_type att
+			left join user_data ud on att.created_by = ud.id
+    		left join user_data ud1 on att.updated_by = ud1.id	
+    		left join lookup_data ld on ld.lookup_cat = 5 and ld.lookup_value = att.trx_group	
+    	WHERE att.trx_name = #{value}
+    </select>
+    
+    <select id="findAppsTrxTypeById" resultType="AppsTrxType" parameterType="java.lang.Integer">
+		SELECT <include refid="_sqlAppsTrxType" />
+		FROM apps_trx_type att
+			left join user_data ud on att.created_by = ud.id
+    		left join user_data ud1 on att.updated_by = ud1.id			
+    		left join lookup_data ld on ld.lookup_cat = 5 and ld.lookup_value = att.trx_group
+    	WHERE att.id = #{value}
+    </select>
+    
+    <select id="findAppsTrxTypeByParam" resultType="AppsTrxType" parameterType="AppsTrxTypeParamVO">
+		SELECT <include refid="_sqlAppsTrxType" />
+			,@row_number:=@row_number+1 AS rowNum
+		FROM apps_trx_type att
+			left join user_data ud on att.created_by = ud.id
+    		left join user_data ud1 on att.updated_by = ud1.id	
+    		left join lookup_data ld on ld.lookup_cat = 5 and ld.lookup_value = att.trx_group	
+    		,(SELECT @row_number:=${rowStartMysql}) AS t
+    	<include refid="_sqlFindAppsTrxType" />
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+    
+    <select id="countAppsTrxTypeByParam" resultType="java.lang.Integer" parameterType="AppsTrxTypeParamVO">
+		SELECT count(1)
+		FROM apps_trx_type att
+			left join user_data ud on att.created_by = ud.id
+    		left join user_data ud1 on att.updated_by = ud1.id		
+    		left join lookup_data ld on ld.lookup_cat = 5 and ld.lookup_value = att.trx_group    			
+    	<include refid="_sqlFindAppsTrxType" />
+    </select>
+    
+    <sql id="_sqlFindAppsTrxType">
+    	<where>
+			<if test="trxName != null and trxName.length() > 0">
+				AND upper(att.trx_name) like #{trxNameLike}
+			</if>
+			<if test="trxGroup > 0 ">
+				AND att.trx_group = #{trxGroup}
+			</if>
+		</where>
+    </sql>
+</mapper>

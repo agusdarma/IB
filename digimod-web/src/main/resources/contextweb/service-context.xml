@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+	<!-- Scan all class with @Repository, @Service, and @Component -->
+	<!-- (beware that this does not enable mapper scanning!) -->
+	<context:component-scan base-package="id.co.emobile.samba.web.service" />
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="samba-web" />
+	</bean>
+	
+	<bean id="httpTransmitterAgent" class="id.co.emobile.samba.web.http.HttpTransmitterAgent" 
+			init-method="start" destroy-method="stop">
+		<property name="id" value="HTTP-AGT" />
+		<property name="timeout" value="1000" />
+		<property name="maxConnection" value="100" />
+	</bean>
+	
+	<!--
+	<bean id="trxMmbsService" class="id.co.emobile.samba.web.service.TrxMmbsService" 
+			init-method="init" destroy-method="shutdown">
+		<property name="transmitterAgent" ref="httpTransmitterAgent" />
+		<property name="patternTrf" value="ke ([0-9]) dan ke ([0-9])" />
+		<property name="patternBal" value="jam [0-9]{1,2}:[0-9]{2} Rp.([0-9.,]{2,15})" />
+	</bean>
+	-->
+	
+	<!--  <bean id="trxCollegaService" class="id.co.emobile.samba.web.service.TrxCollegaService" 
+			init-method="init" destroy-method="shutdown">
+		<property name="transmitterAgent" ref="httpTransmitterAgent" />
+		<property name="timeServer" value="GMT+7" />
+	</bean>
+	-->
+	
+	<!--  <bean id="smsSenderService" class="id.co.emobile.samba.web.service.SmsSenderService" 
+			init-method="init" destroy-method="shutdown">
+		<property name="transmitterAgent" ref="httpTransmitterAgent" />
+		<property name="trxService" ref="trxCollegaService" />
+		<property name="agentCount" value="20" />
+	</bean>
+	-->
+	
+	<!-- Sequence Generator -->
+	<!--<bean id="sysSequenceGenerator"
+		class="id.co.emobile.samba.web.service.SequenceGeneratorService"
+			init-method="initService">
+		<property name="appName" value="SYS_SEQ" />
+		<property name="range" value="100" />
+		<property name="sequenceStrategy">
+			<bean class="id.co.emobile.samba.web.sequence.DatePrefixSequenceStrategy">
+				<property name="prefix" value="A" />
+				<property name="limit" value="999999" />
+			</bean>
+		</property>
+	</bean>
+	-->
+	<!--
+	<bean id="checkSequenceGenerator"
+		class="id.co.emobile.samba.web.service.SequenceGeneratorService"
+			init-method="initService">
+		<property name="appName" value="CHK_SEQ" />
+		<property name="range" value="100" />
+		<property name="sequenceStrategy">
+			<bean class="id.co.emobile.samba.web.sequence.DatePrefixSequenceStrategy">
+				<property name="prefix" value="B" />
+				<property name="limit" value="999999" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="collegaSequenceGenerator"
+		class="id.co.emobile.samba.web.service.SequenceGeneratorService"
+			init-method="initService">
+		<property name="appName" value="COLLEGA" />
+		<property name="range" value="100" />
+		<property name="sequenceStrategy">
+			<bean class="id.co.emobile.samba.web.sequence.DatePrefixSequenceStrategy">
+				<property name="limit" value="99999" />
+			</bean>
+		</property>
+	</bean>
+	-->
+	<!--
+	<bean id="sourceAccountService" class="id.co.emobile.samba.web.service.SourceAccountService"
+		init-method="init" destroy-method="shutdown">
+	</bean>
+	-->
+
+	<bean id="versionData" class="id.co.emobile.samba.web.data.VersionData" init-method="printInfo" />
+	<!--
+	<bean id="distMoneyService" class="id.co.emobile.samba.web.service.DistMoneyService">
+		<property name="folderAssignment" value="C:\\Office\\\Project\\jets-digimod\\data_logs" />
+	</bean>
+	-->
+	<bean id="userActivityService" class="id.co.emobile.samba.web.service.UserActivityService" 
+			init-method="init" destroy-method="shutdown">
+		<property name="agentCount" value="10" />
+	</bean>
+
+	<bean id="ServerPerformance" class="id.co.emobile.samba.web.service.ServerPerformanceService" >
+	    <property name="serverNameForTrx" value="contohNamaServer" />
+	</bean>
+		
+	<!-- ========================= SCHEDULER ========================= -->
+	<bean id="syncTimeJob" class="id.co.emobile.samba.web.job.SyncTimeJob" init-method="syncTime" />
+
+	<task:scheduled-tasks scheduler="systemScheduler">
+		 <task:scheduled ref="syncTimeJob" method="syncTime" cron="0 0 * * * ?"/>	  
+		 
+		 <!-- run every 5 minutes -->
+	    <!--  <task:scheduled ref="sddBtiManager" method="checkConnection" cron="0 0/5 * * * ?"/>
+	    <task:scheduled ref="djpBtiManager" method="checkConnection" cron="0 0/5 * * * ?"/>
+	    <task:scheduled ref="btiManager" method="checkConnection" cron="0 0/5 * * * ?"/>
+	    -->
+		 
+		   
+	</task:scheduled-tasks>
+	
+	<task:scheduler id="systemScheduler" pool-size="1" />
+	
+</beans>

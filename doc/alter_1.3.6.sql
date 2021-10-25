@@ -1,0 +1,1 @@
+ALTER TABLE distribution_detail ADD nik VARCHAR(100)

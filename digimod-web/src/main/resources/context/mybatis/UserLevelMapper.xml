@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    Copyright 2010 The myBatis Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.UserLevelMapper">
+
+	<insert id="createUserLevel" parameterType="UserLevel" >
+    	<selectKey keyProperty="levelId" resultType="int" order="BEFORE">
+    		select count(level_id)+1 as lastId from user_level
+  		</selectKey>
+	    insert into user_level(level_id, level_name, level_type, level_desc, 
+    		created_on, created_by, updated_on, updated_by) 
+    	values(#{levelId,javaType=String,jdbcType=VARCHAR},
+    		 #{levelName,javaType=String,jdbcType=VARCHAR}, 
+    		 #{levelType,javaType=Integer,jdbcType=INTEGER},
+    		 #{levelDesc,javaType=String,jdbcType=VARCHAR},
+    		 #{createdOn,javaType=Date,jdbcType=TIMESTAMP},
+    		 #{createdBy,javaType=Integer,jdbcType=INTEGER},
+    		 #{updatedOn,javaType=Date,jdbcType=TIMESTAMP},
+    		 #{updatedBy,javaType=Integer,jdbcType=INTEGER}
+    		 )
+    </insert>
+    
+    <update id="updateUserLevel" parameterType="UserLevel">
+		update user_level set
+			level_name = #{levelName},
+			level_type = #{levelType},
+			level_desc = #{levelDesc},
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn}
+		where level_id=#{levelId} 
+    </update>
+    
+    <select id="findUserMenuAll" resultType="UserMenu">
+        select menu_id as menuId,
+			parent_id as parentId,
+			menu_level as menuLevel,
+			show_order as showOrder,
+			menu_icon as menuIcon,
+			menu_text as menuText,
+			menu_url as menuUrl,
+			menu_group as menuGroup,
+			always_include as alwaysInclude
+        from user_menu
+    </select>
+    
+	<delete id="deleteUserLevelMenu" parameterType="int">
+    	delete from user_level_menu
+    	where level_id=#{value}
+    </delete>
+    
+    <insert id="insertUserLevelMenu" parameterType="UserLevelMenu">
+    	insert into user_level_menu(menu_id, level_id, access_level)
+    	values(#{menuId}, #{levelId}, #{accessLevel})
+    </insert>
+    
+    <resultMap id="UserLevelResult" type="UserLevel">
+		<id property="levelId" column="level_id" />
+		<result property="levelName" column="level_name" />
+		<result property="levelType" column="level_type" />
+		<result property="levelDesc" column="level_desc" />
+		<result property="createdOn" column="created_on" />
+		<result property="createdBy" column="created_by" />
+		<result property="updatedBy" column="updated_by" />
+		<result property="updatedOn" column="updated_on" />
+		
+		<collection property="listMenu" ofType="UserMenu">
+			<id property="menuId" column="menu_id" />
+			<result property="parentId" column="parent_id" />
+			<result property="menuLevel" column="menu_level" />
+			<result property="showOrder" column="show_order" />
+			<result property="menuIcon" column="menu_icon" />
+			<result property="menuText" column="menu_text" />
+			<result property="menuUrl" column="menu_url" />
+			<result property="menuGroup" column="menu_group" />
+			<result property="alwaysIncluded" column="always_included" />
+		</collection>	
+	</resultMap>
+	
+	<sql id="_sqlLevelMenu">
+		l.level_id,
+		l.level_name,
+		l.level_type,
+		l.level_desc,
+		l.created_by,
+		l.created_on,
+		l.updated_by,
+		l.updated_on,
+
+		m.menu_id,
+		m.parent_id,
+		m.menu_level,
+		m.show_order,
+		m.menu_icon,
+		m.menu_text,
+		m.menu_url,
+		m.menu_group,
+		m.always_include
+    </sql>
+    
+    
+    <select id="findUserLevelAll" resultType="UserLevel">
+		select level_id as levelId, level_name as levelName, level_type as levelType, level_desc as levelDesc 
+		from user_level        
+	</select>
+	
+    <select id="findUserLevelForTrxType" resultType="UserLevel">
+		select ul.level_id as levelId, ul.level_name as levelName, ul.level_desc as levelDesc
+		from user_level ul
+			left join (select distinct level_id from user_level_trx_type) as ultt on ultt.level_id = ul.level_id
+		where ultt.level_id is null
+	</select>
+    
+    <select id="findUserLevelById" resultMap="UserLevelResult" parameterType="int">
+        select <include refid="_sqlLevelMenu" />
+        from user_level l 
+       		inner join user_level_menu lm on l.level_id=lm.level_id
+        	inner join user_menu m on lm.menu_id=m.menu_id
+        where l.level_id=#{value}
+    </select>
+
+    <select id="findModuleLeaf" resultMap="ModuleResult">
+		select coalesce(p.menu_text, m.menu_text) as root_name, m.* 
+		from user_menu m
+			left join user_menu p on m.parent_id=p.menu_id
+		where m.always_include=0 and m.menu_level=2
+		order by m.parent_id, m.show_order
+     </select>
+   
+    <resultMap id="ModuleResult" type="UserLevelMenuVO">
+		<result property="header" column="root_name" />
+		
+		<collection property="bodies" ofType="UserMenu">
+			<id property="menuId" column="menu_id" />
+			<result property="parentId" column="parent_id" />
+			<result property="menuLevel" column="menu_level" />
+			<result property="showOrder" column="show_order" />
+			<result property="menuIcon" column="menu_icon" />
+			<result property="menuText" column="menu_text" />
+			<result property="menuUrl" column="menu_url" />
+			<result property="menuGroup" column="menu_group" />
+			<result property="alwaysInclude" column="always_include" />
+		</collection>	
+	</resultMap>
+
+    <select id="findUserLevelByParam" resultType="userLevel" parameterType="UserLevelParamVO">
+        select l.level_id as levelId, l.level_name as levelName, l.level_type as levelType, l.level_desc as levelDesc
+        	,ll.lookup_desc as levelTypeDisplay
+        	,@row_number:=@row_number+1 AS rowNum
+  		from user_level l    
+  		left join lookup_data ll on l.level_type=ll.lookup_value and ll.lookup_cat=3
+  		,(SELECT @row_number:=${rowStartMysql}) AS t  
+  		<include refid="_sqlFindLevel" />
+  		ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+	
+	<select id="countUserLevelByParam" resultType="java.lang.Integer" parameterType="UserLevelParamVO">
+        select count(l.level_name) as levelName
+  		from user_level l 
+  		<include refid="_sqlFindLevel" />
+    </select>
+    
+    <resultMap id="UserDataResult" type="UserLevel">
+		<id property="levelId" column="levelId" />
+		<result property="levelName" column="levelName" />
+		<result property="levelType" column="levelType" />
+		<result property="levelDesc" column="levelDesc" />
+		<result property="createdBy" column="createdBy" />
+		<result property="createdOn" column="createdOn" />
+		<result property="updatedBy" column="updatedBy" />
+		<result property="updatedOn" column="updatedOn" />
+
+		<collection property="listMenu" ofType="UserMenu">
+			<id property="menuId" column="menuId" />
+			<result property="parentId" column="parentId" />
+			<result property="menuLevel" column="menuLevel" />
+			<result property="showOrder" column="showOrder" />
+			<result property="menuText" column="menuText" />
+			<result property="menuUrl" column="menuUrl" />
+			<result property="menuGroup" column="menuGroup" />
+			<result property="alwaysInclude" column="alwaysInclude" />
+			<result property="accessLevel" column="accessLevel" />
+		</collection>	
+	</resultMap>
+    
+	<select id="findLevelById" resultMap="UserDataResult" parameterType='java.lang.Integer'>
+		 select
+		 	r.level_id as levelId,
+	    	r.level_name as levelName,
+	    	r.level_type as levelType,
+	    	r.level_desc as levelDesc, 
+			r.created_by as createdBy,
+			r.created_on as createdOn,
+			r.updated_by as updatedBy,
+			r.updated_on as updatedOn,
+	    	m.menu_id as menuId,
+	      	m.parent_id as parentId,
+	      	m.menu_level as menuLevel,
+	      	m.show_order as showOrder,
+	      	m.menu_text as menuText,
+	     	m.menu_url as menuUrl,
+	      	m.menu_group as menuGroup,
+	      	m.always_include as alwaysInclude,
+	      	rm.access_level as accessLevel
+	    from user_level r
+			left join user_level_menu rm on r.level_id=rm.level_id
+			inner join user_menu m on rm.menu_id=m.menu_id
+	    where r.level_id=#{value}
+	</select>
+        
+   	<select id="getAllUserLevel" resultType="UserLevel">
+        select level_id as levelId, level_name as levelName from user_level order by level_name
+    </select>
+	
+	<select id="countUserLevelValidate" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(l.level_name) as levelName
+  		from user_level l 
+  		where l.level_name=#{value}
+    </select>
+    
+	<select id="findUserModulesAll" resultType="UserMenu">
+        select 
+			menu_id as menuId,
+	    	parent_id as parentId, 
+	    	menu_level as menuLevel, 
+	    	show_order as showOrder, 
+	    	menu_text as menuText, 
+	    	menu_url as menuUrl, 
+	    	menu_group as menuGroup, 
+	    	always_include as alwaysInclude
+        from user_menu
+    </select>
+    
+    <insert id="createUserLevelData" parameterType="UserLevel">
+    	<selectKey keyProperty="levelId" resultType="int" order="BEFORE">
+    		select ifnull(max(level_id), 0) + 1 as lastId from user_level
+  		</selectKey>
+        insert into user_level(level_id, level_name, level_type, level_desc, created_by, 
+        	created_on, updated_by, updated_on) 
+    		values(#{levelId}, #{levelName}, #{levelType}, #{levelDesc}, #{createdBy}, 
+    		#{createdOn}, #{updatedBy}, #{updatedOn})
+    </insert>
+	 
+	 <update id="updateUserLevelData" parameterType="UserLevel">
+		update user_level set
+			level_type = #{levelType},
+			level_desc = #{levelDesc},
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn}
+		where level_name=#{levelName} 
+    </update>
+	
+    <sql id="_sqlFindLevel">
+    	<where>
+			<if test="levelName != null and levelName.length() > 0">
+				AND l.level_name like concat(concat('%',#{levelName}),'%')
+			</if>
+		</where>
+    </sql>
+
+	<delete id="deleteLevelMenuById" parameterType="java.lang.Integer">
+		delete 
+		from user_level
+		where level_id=#{value} 
+    </delete>
+	    
+    <delete id="deleteUserLevelByLevelId" parameterType="java.lang.Integer">
+		delete 
+		from user_level_menu 
+		where level_id=#{value} 
+    </delete>
+    
+	<select id="findUserLevelMenuByLevelId" resultType="UserLevelMenu" parameterType="java.lang.Integer">
+        select 
+			menu_id as menuId,
+	    	level_id as levelId,
+	    	access_level as accessLevel
+        from user_level_menu
+        where level_id = #{value}
+    </select>
+    
+</mapper>

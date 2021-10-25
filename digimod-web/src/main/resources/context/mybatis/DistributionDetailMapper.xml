@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    Copyright 2010 The myBatis Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.DistributionDetailMapper">
+    
+    <insert id="createDistributionDetail" parameterType="DistributionDetail">
+    	insert into distribution_detail(syslogno, detail_id, phone_no, bank_code, account_no, account_name,
+    		money_value, host_ref_no, host_rc, host_message,
+    		process_status, process_started, process_finished, process_remarks, data_check,nama,npwp,npwp_penyetor,alamat,jenis_pajak,jenis_setoran,start_date_pbb,end_date_pbb,
+    		tahun_pajak,jumlah_setor,uraian_ssp,no_sk,kode_kkp_ssp,id_billing,masa_aktif_billing,nop,kota_wp,nik)
+    	values(#{sysLogNo}, #{detailId}, #{phoneNo}, #{bankCode}, #{accountNo}, #{accountName},
+    		#{moneyValue}, #{hostRefNo}, #{hostRc}, #{hostMessage}, 
+    		#{processStatus}, #{processStarted}, #{processFinished}, #{processRemarks}, #{dataCheck},#{nama},#{npwp},#{npwpPenyetor},#{alamat},#{jenisPajak},#{jenisSetoran},
+    		#{startDatePbb},#{endDatePbb},#{tahunPajak},#{jumlahSetor},#{uraianSsp},#{noSk},#{kodeKkpSsp},#{idBilling},#{masaAktifBilling},#{nop},#{kotaWp},#{nik}
+    	)
+    </insert>
+    
+    <update id="updateDistributionDetail" parameterType="DistributionDetail">
+    	update distribution_detail set
+    		host_ref_no=#{hostRefNo},
+    		host_rc=#{hostRc},
+    		host_message=#{hostMessage},
+    		process_status=#{processStatus},
+    		process_started=#{processStarted},
+    		ntpn=#{ntpn},
+    		nop=#{nop},
+    		ntb=#{ntb},
+    		stan=#{stan},
+    		tanggal_buku=#{tanggalBuku},
+    		tanggal_jam_bayar=#{tglJamBayar},
+    		tahun_pajak=#{tahunPajak},
+    		kode_cabang=#{kodeCabang},
+    		alamat=#{alamat},
+    	
+    		process_finished=#{processFinished},
+    		process_remarks=#{processRemarks}
+    	where syslogno=#{sysLogNo} and detail_id=#{detailId}
+    </update>
+    
+    <sql id="_fieldDistributionDetail">
+    	dd.syslogno as sysLogNo, 
+    	dd.detail_id as detailId, 
+    	dd.phone_no as phoneNo, 
+    	dd.account_no as accountNo, 
+    	dd.account_name as accountName,
+    	dd.bank_code as bankCode,
+    	dd.money_value as moneyValue, 
+    	dd.host_ref_no as hostRefNo, 
+    	dd.host_rc as hostRc, 
+    	dd.host_message as hostMessage,
+    	dd.process_status as processStatus, 
+    	dd.process_started as processStarted, 
+    	dd.process_finished as processFinished,
+    	dd.process_remarks as processRemarks,
+    	dd.data_check as dataCheck,
+    	dd.nama as nama,
+    	dd.kota_wp as kotaWp,
+    	dd.nik as nik,
+    	dd.ntpn as ntpn,
+    	dd.nop as nop,
+    	dd.ntb as ntb,
+    	dd.stan as stan,
+    	dd.tanggal_buku as tanggalBuku,
+    	dd.tanggal_jam_bayar as tglJamBayar,
+    	dd.kode_cabang as kodeCabang,
+    	dd.npwp as npwp,
+    	dd.npwp_penyetor as npwpPenyetor,
+    	dd.alamat as alamat,
+    	dd.jenis_pajak as jenisPajak,
+    	dd.jenis_setoran as jenisSetoran,
+    	dd.start_date_pbb as startDatePbb,
+    	dd.end_date_pbb as endDatePbb,
+    	dd.tahun_pajak as tahunPajak,
+    	dd.jumlah_setor as jumlahSetor,
+    	dd.uraian_ssp as uraianSsp,
+    	dd.no_sk as noSk,
+    	dd.kode_kkp_ssp as kodeKkpSsp,
+    	dd.id_billing as idBilling,
+    	dd.masa_aktif_billing as masaAktifBilling,
+    	l.lookup_desc as processStatusDisplay
+    </sql>
+    
+    <select id="findDistributionDetailBySysLogNo" resultType="DistributionDetail" parameterType="String">
+        select <include refid="_fieldDistributionDetail" />
+        from distribution_detail dd
+        left join lookup_data l on dd.process_status=l.lookup_value and l.lookup_cat=4
+        where dd.syslogno=#{sysLogNo}
+    </select>
+    
+</mapper>

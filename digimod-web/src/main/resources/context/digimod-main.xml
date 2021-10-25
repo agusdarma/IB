@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+   
+<struts>
+
+	<package name="digimod-main" extends="digimod-base">           		
+	
+		<action name="Login!*" method="{1}" class="id.co.emobile.samba.web.action.LoginAction">
+            <interceptor-ref name="webStack" />
+            <result name="success" type="redirectAction">MainMenu</result>
+            <result name="input">/WEB-INF/pages/login.jsp</result>
+        </action>
+        
+        <action name="Captcha" method="processCaptcha" class="id.co.emobile.samba.web.action.LoginAction">
+            <interceptor-ref name="webStack" />
+            <result name="success" type="stream">
+              <param name="allowCaching">false</param>
+			  <param name="contentType">image/jpeg</param>
+			  <param name="inputName">imageStream</param>
+			  <param name="contentDisposition">inline</param>
+			  <param name="bufferSize">1024</param>
+			</result>
+        </action>
+        
+        <action name="Logout" method="logoff" class="id.co.emobile.samba.web.action.LoginAction">
+            <interceptor-ref name="webStack" />
+            <result name="success">/WEB-INF/pages/login.jsp</result>
+        </action>
+        
+        <action name="Contact" method="goToContact" class="id.co.emobile.samba.web.action.LoginAction">
+            <interceptor-ref name="webStack" />
+            <result name="success">/WEB-INF/pages/contact.jsp</result>
+        </action>
+        
+        <action name="MainMenu" method="mainMenu" class="id.co.emobile.samba.web.action.LoginAction">
+           <interceptor-ref name="webSecureStack" />
+            <result name="success">/WEB-INF/pages/home.jsp</result>
+        </action>
+        
+        <action name="InvalidModule" method="invalidModule" class="id.co.emobile.samba.web.action.LoginAction">
+           <interceptor-ref name="webSecureStack" />
+            <result name="success">/WEB-INF/pages/home.jsp</result>
+        </action>
+        
+	</package>
+</struts>

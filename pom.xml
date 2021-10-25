@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>id.co.emobile</groupId>
+  <artifactId>digimod-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0</version>
+  <url>http://maven.apache.org</url>
+  <!--
+  <repositories>
+    <repository>
+        <id>central</id>
+        <url>http://192.168.0.9:8081/artifactory/repo</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>snapshots</id>
+        <url>http://192.168.0.9:8081/artifactory/repo</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+
+    <pluginRepository>
+        <id>central</id>
+        <url>http://192.168.0.9:8081/artifactory/plugins-releases</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </pluginRepository>
+    
+    <pluginRepository>
+        <id>snapshots</id>
+        <url>http://192.168.0.9:8081/artifactory/plugins-snapshots</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  -->
+  
+  <properties>
+		<spring.version>4.1.6.RELEASE</spring.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
+  <dependencies>
+    <!-- Mock Framework - Moxie -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.0.62-beta</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>     
+		
+		<!-- Logging Framework - LogBack -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.7</version>
+		</dependency>
+		<!-- Replacing Commons-Logging (used by Spring) with Logback -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+		<!-- https://logging.apache.org/log4j/log4j-2.3/log4j-to-slf4j/index.html -->
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-to-slf4j</artifactId>
+		    <version>2.6.2</version>
+		</dependency>
+				
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+  			<groupId>org.springframework</groupId>
+  			<artifactId>spring-web</artifactId>
+  			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+    	<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+    </dependencies>
+  </dependencyManagement>  
+  <build>
+    <pluginManagement>
+      <plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<!-- best lock down version of the plugin too -->
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+			</plugins>
+    </pluginManagement>
+  </build>
+</project> 

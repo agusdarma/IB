@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+   
+<struts>
+
+	<package name="digimod-operational" extends="digimod-base">           		
+	
+		<action name="DistMaker!*" method="{1}" class="id.co.emobile.samba.web.action.operational.DistMakerAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/dist_maker_input.jsp</result>
+			<result name="verify">WEB-INF/pages/operational/dist_maker_verify.jsp</result>
+			<result name="success" type="redirectAction">DistMaker!finish</result>
+			<result name="finish">WEB-INF/pages/operational/dist_maker_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="DistChecker!*" method="{1}" class="id.co.emobile.samba.web.action.operational.DistCheckerAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/dist_checker_input.jsp</result>
+			<result name="detail">WEB-INF/pages/operational/dist_checker_detail.jsp</result>
+			<result name="success" type="redirectAction">DistChecker!finish</result>
+			<result name="finish">WEB-INF/pages/operational/dist_checker_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="DistCallback!*" method="{1}" class="id.co.emobile.samba.web.action.operational.DistCallbackAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/dist_callback_input.jsp</result>
+			<result name="detail">WEB-INF/pages/operational/dist_callback_detail.jsp</result>
+			<result name="success" type="redirectAction">DistCallback!finish</result>
+			<result name="finish">WEB-INF/pages/operational/dist_callback_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="DistApproval!*" method="{1}" class="id.co.emobile.samba.web.action.operational.DistApprovalAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/dist_approval_input.jsp</result>
+			<result name="detail">WEB-INF/pages/operational/dist_approval_detail.jsp</result>
+			<result name="success" type="redirectAction">DistApproval!finish</result>
+			<result name="finish">WEB-INF/pages/operational/dist_approval_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+			
+			<result name="process" type="json">
+				<param name="root">wrv</param>
+			</result> 
+		</action>
+        
+        <action name="Download" class="id.co.emobile.samba.web.action.operational.DownloadAction">
+        	<result name="success" type="stream">
+			  <param name="contentType">${downloadContentType}</param>
+			  <param name="inputName">fileInputStream</param>
+			  <param name="contentDisposition">${downloadContentDisposition}</param>
+			  <param name="bufferSize">1024</param>
+			</result>
+			<result name="failed">WEB-INF/pages/operational/download_failed.jsp</result>
+        </action>
+        
+        <action name="CheckAccStatement!*" method="{1}" class="id.co.emobile.samba.web.action.operational.CheckAccStatementAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="search">/WEB-INF/pages/operational/check_acc_statement.jsp</result>
+		</action>
+		
+		<action name="DistMakerOther!*" method="{1}" class="id.co.emobile.samba.web.action.operational.DistMakerOtherAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/other/dist_maker_other_input.jsp</result>
+			<result name="verify">WEB-INF/pages/operational/other/dist_maker_other_verify.jsp</result>
+			<result name="success" type="redirectAction">DistMakerOther!finish</result>
+			<result name="finish">WEB-INF/pages/operational/other/dist_maker_other_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="CreateIdBilling!*" method="{1}" class="id.co.emobile.samba.web.action.operational.CreateIdBillingAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/pbb/create_id_billing_input.jsp</result>
+			<result name="verify">WEB-INF/pages/operational/pbb/create_id_billing_verify.jsp</result>
+			<result name="success" type="redirectAction">CreateIdBilling!finish</result>
+			<result name="finish">WEB-INF/pages/operational/pbb/create_id_billing_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="CreateIdBillingNonNpwp!*" method="{1}" class="id.co.emobile.samba.web.action.operational.CreateIdBillingNonNpwpAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/pbb/create_id_billing_input_non_npwp.jsp</result>
+			<result name="verify">WEB-INF/pages/operational/pbb/create_id_billing_verify_non_npwp.jsp</result>
+			<result name="success" type="redirectAction">CreateIdBilling!finish</result>
+			<result name="finish">WEB-INF/pages/operational/pbb/create_id_billing_finish_non_npwp.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="CreateIdBillingChecker!*" method="{1}" class="id.co.emobile.samba.web.action.operational.CreateIdBillingCheckerAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/pbb/create_id_billing_checker_input.jsp</result>
+			<result name="detail">WEB-INF/pages/operational/pbb/create_id_billing_checker_detail.jsp</result>
+			<result name="success" type="redirectAction">CreateIdBillingChecker!finish</result>
+			<result name="finish">WEB-INF/pages/operational/pbb/create_id_billing_checker_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="CreateIdBillingCallback!*" method="{1}" class="id.co.emobile.samba.web.action.operational.CreateIdBillingCallbackAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/pbb/create_id_billing_callback_input.jsp</result>
+			<result name="detail">WEB-INF/pages/operational/pbb/create_id_billing_callback_detail.jsp</result>
+			<result name="success" type="redirectAction">CreateIdBillingCallback!finish</result>
+			<result name="finish">WEB-INF/pages/operational/pbb/create_id_billing_callback_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+		</action>
+		
+		<action name="CreateIdBillingApproval!*" method="{1}" class="id.co.emobile.samba.web.action.operational.CreateIdBillingApprovalAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/operational/pbb/create_id_billing_approval_input.jsp</result>
+			<result name="detail">WEB-INF/pages/operational/pbb/create_id_billing_approval_detail.jsp</result>
+			<result name="detail2">WEB-INF/pages/operational/pbb/create_id_billing_approval_detail2.jsp</result>
+			<result name="success" type="redirectAction">CreateIdBillingApproval!finish</result>
+			<result name="finish">WEB-INF/pages/operational/pbb/create_id_billing_approval_finish.jsp</result>
+			
+			<result name="otp" type="json">
+				<param name="root">wrv</param>
+			</result>
+			
+			<result name="process" type="json">
+				<param name="root">wrv</param>
+			</result> 
+		</action>
+        
+	</package>
+</struts>

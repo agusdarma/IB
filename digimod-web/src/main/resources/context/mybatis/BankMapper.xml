@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.BankMapper">	
+	<insert id="createBank" parameterType="Bank" useGeneratedKeys="true" keyProperty="id">
+	    insert into bank(bank_code, bank_name, bank_logo, 
+	    			bank_initial, show_def_account, ussd_code, tpda, bank_url, show_order,
+					created_by, created_on, updated_by, updated_on, version_status, support_long_call,
+					show_on) 
+			values(#{bankCode}, #{bankName}, #{bankLogo}, 
+					#{bankInitial}, #{showDefAccount}, #{ussdCode}, #{tpda}, #{bankUrl}, #{showOrder},
+				 	#{createdBy}, #{createdOn}, #{updatedBy}, #{updatedOn}, #{versionStatus}, #{supportLongCall},
+				 	#{showOn}) 
+    </insert>
+    
+    <update id="updateBank" parameterType="Bank">
+		update bank 
+		set bank_code = #{bankCode},
+			bank_name = #{bankName},
+			bank_initial = #{bankInitial},
+			<if test="bankLogo != null">
+				bank_logo = #{bankLogo},
+			</if>
+			show_def_account = #{showDefAccount},
+			ussd_code = #{ussdCode},
+			tpda = #{tpda},
+			bank_url = #{bankUrl},
+			show_order = #{showOrder},
+			show_on = #{showOn},
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn},
+			support_long_call = #{supportLongCall},
+			version_status = #{versionStatus}
+		where id=#{id} 
+    </update>
+    
+    <sql id="_sqlBank">
+        b.id as id,
+		b.bank_code as bankCode,
+		b.bank_name as bankName,
+		b.bank_logo as bankLogo,
+		b.show_on as showOn,
+		b.bank_initial as bankInitial,
+		b.show_def_account as showDefAccount,
+		b.ussd_code as ussdCode,
+		b.tpda as tpda,
+		b.bank_url as bankUrl,
+		b.show_order as showOrder,
+		b.created_by as createdBy,
+		b.created_on as createdOn,
+		b.updated_by as updatedBy,
+		b.updated_on as updatedOn,
+		b.support_long_call as supportLongCall,
+		ud.user_name as createdByDisplay,
+		ud1.user_name as updatedByDisplay
+    </sql>
+    
+    <select id="findAllBank" resultType="Bank">
+		SELECT <include refid="_sqlBank" />
+		FROM bank b
+			left join user_data ud on b.created_by = ud.id
+    		left join user_data ud1 on b.updated_by = ud1.id
+    	order by b.bank_initial asc
+    </select>
+    
+    <select id="findBankByBankCode" resultType="Bank" parameterType="java.lang.String">
+		SELECT <include refid="_sqlBank" />
+		FROM bank b
+			left join user_data ud on b.created_by = ud.id
+    		left join user_data ud1 on b.updated_by = ud1.id			
+    	WHERE b.bank_code = #{value}
+    </select>
+    
+    <select id="findBankById" resultType="Bank" parameterType="java.lang.Integer">
+		SELECT <include refid="_sqlBank" />
+		FROM bank b
+			left join user_data ud on b.created_by = ud.id
+    		left join user_data ud1 on b.updated_by = ud1.id			
+    	WHERE b.id = #{value}
+    </select>
+    
+    <select id="findBankByParam" resultType="Bank" parameterType="BankParamVO">
+		SELECT <include refid="_sqlBank" />
+			,ld.lookup_desc as showOnDisplay
+			,@row_number:=@row_number+1 AS rowNum
+		FROM bank b
+			left join user_data ud on b.created_by = ud.id
+    		left join user_data ud1 on b.updated_by = ud1.id
+    		inner join lookup_data ld on b.show_on = ld.lookup_value  and ld.lookup_cat = 2			
+    		,(SELECT @row_number:=${rowStartMysql}) AS t
+    	<include refid="_sqlFindBank" />    		
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+    
+    <select id="countBankByParam" resultType="java.lang.Integer" parameterType="BankParamVO">
+		SELECT count(1)
+		FROM bank b
+			left join user_data ud on b.created_by = ud.id
+    		left join user_data ud1 on b.updated_by = ud1.id
+    		inner join lookup_data ld on b.show_on = ld.lookup_value  and ld.lookup_cat = 2;
+    	<include refid="_sqlFindBank" />
+    </select>
+    
+    <sql id="_sqlFindBank">
+    	<where>
+			<if test="bankCode != null and bankCode.length() > 0">
+				AND upper(b.bank_code) like #{bankCodeLike}
+			</if>
+			<if test="bankName != null and bankName.length() > 0">
+				AND upper(b.bank_name) like #{bankNameLike}
+			</if>
+			<if test="bankInitial != null and bankInitial.length() > 0">
+				AND upper(b.bank_initial) like #{bankInitialLike}
+			</if>
+		</where>
+    </sql>
+    
+    <select id="findBankByShowOrder" resultType="Bank" parameterType="java.lang.Integer">
+		SELECT <include refid="_sqlBank" />
+		FROM bank b
+			left join user_data ud on b.created_by = ud.id
+    		left join user_data ud1 on b.updated_by = ud1.id			
+    	WHERE b.show_order = #{value}
+    </select>
+</mapper>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    Copyright 2010 The myBatis Team
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.UserDataMapper">
+
+	<insert id="createUserData" parameterType="UserData">
+	    <selectKey keyProperty="id" resultType="int" order="BEFORE">
+    		select ifnull(max(id), 0) + 1 as lastId from user_data
+  		</selectKey>
+		insert into user_data(id, user_code, user_name, user_password, phone_no, invalid_count, 
+			user_status, level_id, group_id,branch_id, last_login_on, pass_changed_on, has_change_pass, user_status,
+			session_id, created_on, created_by, updated_on, updated_by)
+		values(#{id}, #{userCode}, #{userName}, #{userPassword}, #{phoneNo}, #{invalidCount}, 
+			#{userStatus}, #{levelId}, #{groupId},#{branchId}, #{lastLoginOn}, #{passChangedOn}, #{hasChangePass}, #{userStatus},
+			#{sessionId}, #{createdOn}, #{createdBy}, #{updatedOn}, #{updatedBy})
+    </insert>
+    
+    <update id="updateUserData" parameterType="UserData">
+    	update user_data set
+    		user_code=#{userCode}, 
+    		user_name=#{userName}, 
+			user_password=#{userPassword}, 
+			phone_no=#{phoneNo},
+			invalid_count=#{invalidCount}, 
+			user_status=#{userStatus}, 
+			level_id=#{levelId}, 
+			group_id=#{groupId},
+			branch_id=#{branchId},
+			last_login_on=#{lastLoginOn}, 
+			pass_changed_on=#{passChangedOn}, 
+			has_change_pass=#{hasChangePass}, 
+			session_id=#{sessionId}, 
+			updated_on=#{updatedOn}, 
+			updated_by=#{updatedBy}
+        where id = #{id}
+    </update>
+    
+    <insert id="insertNewUser" parameterType="UserData" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+    		select ifnull(max(id), 0) + 1 as lastId from user_data
+  		</selectKey>
+		insert into user_data(id, user_code, user_name, user_password, phone_no,
+				 	invalid_count, user_status, level_id, group_id,branch_id, 
+				 	last_login_on, pass_changed_on, has_change_pass,
+				 	session_id, created_on, created_by,
+				 	updated_on, updated_by) 
+			values(#{id}, #{userCode}, #{userName}, #{userPassword}, #{phoneNo},
+				 	'0', '1', #{levelId}, #{groupId},#{branchId},
+				 	#{lastLoginOn}, #{passChangedOn}, #{hasChangePass} ,
+					'', #{createdOn}, #{createdBy},
+				 	#{updatedOn},  #{updatedBy}) 
+    </insert>
+    
+    <update id="updateNewUser" parameterType="UserData">
+		update user_data set
+			user_name = #{userName},
+			phone_no = #{phoneNo},
+			level_id = #{levelId},
+			group_id = #{groupId},
+			branch_id = #{branchId},
+			user_status = #{userStatus},
+			invalid_count= 0,
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn}
+		where id=#{id} 
+    </update>
+    
+    <sql id="_sqlUserData">
+    	ud.id as id,
+		ud.user_code as userCode,
+		ud.user_name as userName,
+		ud.user_password as userPassword,
+		ud.phone_no as phoneNo,
+		ud.invalid_count as invalidCount,
+		ud.user_status as userStatus,
+		ud.level_id as levelId,
+		ud.group_id as groupId,
+		ud.branch_id as branchId,
+		ud.last_login_on as lastLoginOn,
+		ud.pass_changed_on as passChangedOn,
+		ud.has_change_pass as hasChangePass,
+		ud.session_id as sessionId,
+		ud.created_on as createdOn,
+		ud.created_by as createdBy,
+		ud.updated_on as updatedOn,
+		ud.updated_by as updatedBy,
+		l.lookup_desc as userStatusDisplay,
+		ul.level_name as userLevelDisplay,
+		ud.last_access_on as lastAccessOn,
+		g.group_name as groupName
+    </sql>
+    
+    <sql id="_sqlUserDataFrom">
+    	user_data ud 
+    		left join lookup_data l on ud.user_status=l.lookup_value and l.lookup_cat=1
+    		left join user_level ul on ud.level_id=ul.level_id
+    		left join user_group g on ud.group_id=g.id
+    </sql>
+    
+    <select id="findUserDataByUserCode" resultType="UserData" parameterType="java.lang.Integer">
+		select <include refid="_sqlUserData"/> 
+		from <include refid="_sqlUserDataFrom" />
+		where lower(ud.user_code) = #{value}
+    </select>
+    
+    <select id="findUserDataById" resultType="UserData" parameterType="java.lang.Integer">
+		select <include refid="_sqlUserData"/> 
+		from <include refid="_sqlUserDataFrom" />
+		where ud.id = #{value}
+    </select>
+    
+    <select id="checkSessionLogin" resultType="int" parameterType="java.util.Map">
+    	select count(ud.id) as countUser
+    	from user_data ud
+    	where ud.id=#{userId} and ud.session_id=#{sessionId}
+    </select>
+    
+    <update id="clearSessionLogin" parameterType="int">
+    	update user_data 
+    	set session_id = '' 
+    	where id = #{value}
+    </update>
+        
+    <select id="countLevelUsedByName" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT count(id) as count 
+		FROM user_data
+		where level_id = #{value}
+    </select>
+    
+    <select id="countUserValidate" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(id) as count 
+		FROM user_data
+		where user_code = #{value}
+    </select>
+    
+    
+    <!-- ddddd -->
+     <select id="findResetPassword" resultType="UserData" parameterType="UserDataParamVO">
+	     SELECT ud.user_code	as userCode,
+				ud.user_name 	as userName,
+				ul.level_name 	as userLevelDisplay
+		 FROM	user_data ud
+	       		inner join user_level ul on ul.level_id=ud.level_id
+	     <include refid="_sqlResetPasswordWhere" />
+  		ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+    
+      <sql id="_sqlResetPasswordWhere">
+    	<where>
+			<if test="userCode != null and userCode.length() > 0">
+				AND upper(ud.user_code) like concat(concat('%',upper(#{userCode})),'%')
+			</if>
+		</where>
+    </sql>
+  	
+  	 <update id="updateResetPassword" parameterType="UserData">
+		    update user_data set
+		    	user_password	=#{userPassword},
+		    	pass_changed_on	=#{passChangedOn}, 
+				has_change_pass	=#{hasChangePass}, 
+				invalid_count	= 0,
+		    	updated_on		=#{updatedOn}, 
+				updated_by		=#{updatedBy}
+		    where id = #{id}
+    </update>
+    
+    <select id="findUserByParam" resultType="UserData" parameterType="UserDataParamVO">
+		select <include refid="_sqlUserData"/>
+			,@row_number:=@row_number+1 AS rowNum
+		from <include refid="_sqlUserDataFrom" />
+			,(SELECT @row_number:=${rowStartMysql}) AS t
+  		<include refid="_sqlFindUser" />
+  		ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+    
+    <select id="countUserByParam" resultType="java.lang.Integer" parameterType="UserData">
+		SELECT count(ud.id) as count 
+		from <include refid="_sqlUserDataFrom" />
+  		<include refid="_sqlFindUser" />
+    </select>
+    
+    <sql id="_sqlFindUser">
+    	<where>
+			<if test="userCode != null and userCode.length() > 0">
+				AND upper(ud.user_code) like concat(concat('%',upper(#{userCode})),'%')
+			</if>
+			<if test="userStatus != 999">
+				AND ud.user_status = #{userStatus}
+			</if>
+		</where>
+    </sql>
+    
+    <select id="findUserById" resultType="UserData" parameterType="java.lang.Integer">
+		SELECT ud.id as id,
+			ud.user_code as userCode,
+			ud.user_name as userName,
+			ud.user_password as userPassword,
+			ud.phone_no as phoneNo,
+			ud.level_id as levelId,
+			ud.group_id as groupId,
+			ud.branch_id as branchId,
+			ud.created_on as createOn,
+			ud.user_status as userStatus,
+			ud.created_by as createBy,
+			ud.updated_on as updatedOn,
+			ud.updated_by as updatedBy,
+			ud.last_access_on as lastAccessOn
+		FROM user_data ud
+		WHERE ud.id = #{value}
+    </select>
+    
+    <update id="updateLastAccess" parameterType="UserData">
+    	update user_data 
+    	set last_access_on = #{lastAccessOn}
+        where id = #{id}
+    </update>
+    
+    <select id="findUserDataActive" resultType="UserData">
+		select <include refid="_sqlUserData"/>
+		from <include refid="_sqlUserDataFrom" />
+		where ud.user_status=1
+    </select>
+    
+    <select id="findUserDataActiveByGroupAndLevelType" resultType="UserData" parameterType="java.util.Map">
+		select <include refid="_sqlUserData"/>
+		from <include refid="_sqlUserDataFrom" />
+		where ud.user_status=1
+		and ul.level_type=#{levelType}
+		<if test="groupId > 0">
+			and ud.group_id=#{groupId}
+		</if> 		 
+    </select>
+    
+    <select id="findUserDataApprovalActiveForGroup" resultType="UserData" parameterType="int">
+		select <include refid="_sqlUserData"/>
+		from user_group_approval uga 
+			inner join user_data ud on uga.user_data_id=ud.id 
+    		left join lookup_data l on ud.user_status=l.lookup_value and l.lookup_cat=1
+    		left join user_level ul on ud.level_id=ul.level_id
+    		left join user_group g on ud.group_id=g.id
+		where ud.user_status=1
+		and ul.level_type=4
+		and uga.user_group_id=#{value}
+		
+    </select>
+    
+    
+
+</mapper>

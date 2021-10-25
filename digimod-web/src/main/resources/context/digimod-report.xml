@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="digimod-report" extends="digimod-base">
+
+	    <action name="DistMoneyReport!*" method="{1}" class="id.co.emobile.samba.web.action.report.DistMoneyReportAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="search">/WEB-INF/pages/report/dist_money_report.jsp</result>
+			<result name="detail">/WEB-INF/pages/report/dist_money_detail_report.jsp</result>
+			
+			<result name="searchJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wsr</param>
+			</result>
+			<result name="EXPORT" type="jasper">
+            	<param name="location">/WEB-INF/pages/report/jasper/dist_money_report.jasper</param>
+	            <param name="contentDisposition">attachment</param>
+	            <param name="documentName">${documentName}</param>
+            	<param name="dataSource">listHeader</param>
+            	<param name="reportParameters">reportParameters</param>
+            	<param name="format">${exportFormat}</param> <!-- format consist of PDF XLS CSV -->
+             </result> 
+             <result name="EXPORTDETAIL" type="jasper">
+            	<param name="location">/WEB-INF/pages/report/jasper/dist_money_report_detail.jasper</param>
+	            <param name="contentDisposition">attachment</param>
+	            <param name="documentName">${documentName}</param>
+            	<param name="dataSource">listDetail</param>
+            	<param name="reportParameters">reportParameters</param>
+            	<param name="format">${exportFormat}</param> <!-- format consist of PDF XLS CSV -->
+             </result>    
+             <result name="CSV" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">csvStream</param>
+				<param name="contentDisposition">attachment;filename=${documentName}</param>
+				<param name="documentName">${documentName}</param>
+				<param name="bufferSize">1024</param>
+			</result>
+			<result name="json" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">streamTrxCode</param>
+			</result>
+		</action>
+		
+		<action name="UserActivityReport!*" method="{1}" class="id.co.emobile.samba.web.action.report.UserActivityReportAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="search">/WEB-INF/pages/report/user_activity_report.jsp</result>
+			
+			<result name="EXPORT" type="jasper">
+            	<param name="location">/WEB-INF/pages/report/jasper/user_activity_report.jasper</param>
+	            <param name="contentDisposition">attachment</param>
+	            <param name="documentName">${documentName}</param>
+            	<param name="dataSource">listUserActivity</param>
+            	<param name="reportParameters">reportParameters</param>
+            	<param name="format">${exportType}</param> <!-- format consist of PDF XLS CSV -->
+             </result>    
+		</action>
+		
+	</package>
+</struts>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.AppsUserActivityMapper">
+    
+	<insert id="insertAppsUserActivity" parameterType="GenerateSummaryVO">
+	    insert into apps_user_activity(phone_no, apps_type, activity, created_on)
+		select phone_no, 'android', trx_code, created_on
+		from ${tableName}
+	</insert>
+	
+	<delete id="deleteAppsUserActivity" parameterType="GenerateSummaryVO">
+	    delete
+		from apps_user_activity
+		where DATE(created_on) = DATE(#{trxDate})
+	</delete>
+	
+	<select id="checkTable" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(1)
+		FROM information_schema.tables x
+			inner join (select database() as db) y on x.table_schema = y.db
+		WHERE table_name = #{value}
+	</select>
+	
+	<select id="findAppsUserActivity" resultType="AppsUserActivity" parameterType="GenerateSummaryVO">
+		select ua.phone_no as phoneNo, ua.apps_type as appsType, 
+			ua.activity as activity, ua.created_on as createdOn,
+			@row_number:=@row_number+1 AS rowNum
+		from apps_user_activity ua
+			,(SELECT @row_number:=0) AS t
+		<where>
+			<if test="startDate != null">
+				AND ua.created_on >= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND ua.created_on &lt;= #{endDate}
+			</if>
+		</where>
+	</select>
+</mapper>

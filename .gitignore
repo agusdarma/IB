@@ -1,0 +1,5 @@
+!.gitignore
+compile.*
+design/
+data_logs
+work
