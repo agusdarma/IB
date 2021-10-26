@@ -26,10 +26,10 @@
   		</selectKey>
 		insert into user_data(id, user_code, user_name, user_password, phone_no, invalid_count, 
 			user_status, level_id, group_id,branch_id, last_login_on, pass_changed_on, has_change_pass, user_status,
-			session_id, created_on, created_by, updated_on, updated_by,email)
+			session_id, created_on, created_by, updated_on, updated_by,email,pct_sharing_profit)
 		values(#{id}, #{userCode}, #{userName}, #{userPassword}, #{phoneNo}, #{invalidCount}, 
 			#{userStatus}, #{levelId}, #{groupId},#{branchId}, #{lastLoginOn}, #{passChangedOn}, #{hasChangePass}, #{userStatus},
-			#{sessionId}, #{createdOn}, #{createdBy}, #{updatedOn}, #{updatedBy},#{email})
+			#{sessionId}, #{createdOn}, #{createdBy}, #{updatedOn}, #{updatedBy},#{email},#{pctSharingProfit})
     </insert>
     
     <update id="updateUserData" parameterType="UserData">
@@ -47,7 +47,8 @@
 			pass_changed_on=#{passChangedOn}, 
 			has_change_pass=#{hasChangePass}, 
 			session_id=#{sessionId},
-			email=#{email}, 
+			email=#{email},
+			pct_sharing_profit=#{pctSharingProfit}, 
 			updated_on=#{updatedOn}, 
 			updated_by=#{updatedBy}
         where id = #{id}
@@ -61,12 +62,12 @@
 				 	invalid_count, user_status, level_id, group_id,branch_id, 
 				 	last_login_on, pass_changed_on, has_change_pass,
 				 	session_id, created_on, created_by,
-				 	updated_on, updated_by,email) 
+				 	updated_on, updated_by,email,pct_sharing_profit) 
 			values(#{id}, #{userCode}, #{userName}, #{userPassword}, #{phoneNo},
 				 	'0', '1', #{levelId}, #{groupId},#{branchId},
 				 	#{lastLoginOn}, #{passChangedOn}, #{hasChangePass} ,
 					'', #{createdOn}, #{createdBy},
-				 	#{updatedOn},  #{updatedBy},#{email}) 
+				 	#{updatedOn},  #{updatedBy},#{email}) ,#{pctSharingProfit}) 
     </insert>
     
     <update id="updateNewUser" parameterType="UserData">
@@ -80,6 +81,7 @@
 			invalid_count= 0,
 			updated_by = #{updatedBy},
 			email = #{email},
+			pct_sharing_profit = #{pctSharingProfit},
 			updated_on = #{updatedOn}
 		where id=#{id} 
     </update>
@@ -104,6 +106,7 @@
 		ud.updated_on as updatedOn,
 		ud.updated_by as updatedBy,
 		ud.email as email,
+		ud.pct_sharing_profit as pctSharingProfit,
 		l.lookup_desc as userStatusDisplay,
 		ul.level_name as userLevelDisplay,
 		ud.last_access_on as lastAccessOn,
@@ -227,6 +230,7 @@
 			ud.updated_on as updatedOn,
 			ud.updated_by as updatedBy,
 			ud.email as email,
+			ud.pct_sharing_profit as pctSharingProfit,
 			ud.last_access_on as lastAccessOn
 		FROM user_data ud
 		WHERE ud.id = #{value}

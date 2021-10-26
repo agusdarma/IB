@@ -1,6 +1,8 @@
 ALTER TABLE user_data ADD branch_id INT ,
 ALTER TABLE user_data ADD email VARCHAR(100)
 
+ALTER TABLE user_data ADD pct_sharing_profit DOUBLE(2,1)
+
 
 CREATE TABLE user_branch (
 	id INT AUTO_INCREMENT NOT NULL,

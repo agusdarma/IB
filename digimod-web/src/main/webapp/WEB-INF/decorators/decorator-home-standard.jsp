@@ -24,9 +24,7 @@
         <title>Digimob</title>
 
         <!-- FAVICON -->
-        <link rel="shortcut icon" href="<s:url value='/Resource/Icon/PT. eMobile Indonesia - Favicon.ico'/>" />
-        <link rel="shortcut icon" href="<s:url value='/Resource/Icon/PT. eMobile Indonesia - Favicon.ico'/>" type="image/x-icon">
-		<link rel="icon" href="<s:url value='/Resource/Icon/PT. eMobile Indonesia - Favicon.ico'/>" type="image/x-icon">
+        <link href="<s:url value='/img/favicon.ico'/>" rel="shortcut icon" type="image/png"/>
 
         <!-- CSS -->
 		<link id="cssfont" href="<s:url value='/Style/CSS/mmbsfont.css'/>" rel="stylesheet" type="text/css" />

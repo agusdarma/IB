@@ -59,6 +59,7 @@
                               <th scope="col">Email</th>
                               <th scope="col">Level</th>
                               <th scope="col">Phone No</th>
+                              <th scope="col">% Sharing Profit</th>
                               <th scope="col"></th>
                             </tr>
                           </thead>
@@ -71,6 +72,7 @@
                               <td><s:property value="email" /></td>
                               <td><s:property value="userLevelDisplay" /></td>
                               <td><s:property value="phoneNo" /></td>
+                              <td><s:property value="pctSharingProfit" /></td>
                               <td>
                               	<s:url id="urlDetail" action="UserData!detail">
                               		<s:param name="userId" value="%{id}" />

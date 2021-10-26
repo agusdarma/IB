@@ -12,6 +12,7 @@ public class UserData implements java.io.Serializable {
     private String userPassword;  // user_password VARCHAR(64) NOT NULL,
     private String phoneNo;
     private String email;
+    private double pctSharingProfit;
     private int invalidCount;  // invalid_count INT NOT NULL,
     private int userStatus;  // user_status INT NOT NULL,
     private int levelId;  // level_id INT NOT NULL,
@@ -199,6 +200,12 @@ public class UserData implements java.io.Serializable {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public double getPctSharingProfit() {
+		return pctSharingProfit;
+	}
+	public void setPctSharingProfit(double pctSharingProfit) {
+		this.pctSharingProfit = pctSharingProfit;
 	}
 	
 }

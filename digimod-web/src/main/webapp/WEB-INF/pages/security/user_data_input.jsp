@@ -94,6 +94,10 @@
 		                          <s:textfield maxlength="100" type="text" id="email" name="userData.email" cssClass="form-control" required="true" />
 		                        </div>
 		                        <div class="form-group">
+		                          <label class="text-black"><b>Pct Sharing Profit</b></label>
+		                          <s:textfield type="text" id="pctSharingProfit" name="userData.pctSharingProfit" cssClass="form-control" required="true" />
+		                        </div>
+		                        <div class="form-group">
 		                          <label class="text-black"><b>User Level</b></label>
 		                          <s:select id="userlevel" name="userData.levelId" list="listUserLevel" listKey="levelId" listValue="levelName" cssClass="form-control"/>
 		                        </div>
