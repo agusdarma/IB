@@ -257,6 +257,7 @@ public class WebConstants {
 	public static final String PATH_UPDATE_USER_GROUP			="UserGroup!execute.web";
 	public static final String PATH_UPDATE_USER_BRANCH			="UserBranch!execute.web";
 	public static final String PATH_UPDATE_USER_GROUP_APPROVAL ="GroupApproval!execute.web";
+	public static final String PATH_UPDATE_MASTER_TRADING_ACCOUNT			="MstTradeAccount!execute.web";
 	
 	public static final String PATH_UPDATE_SYSTEM_SETTING		="SystemSetting!execute.web";
 	public static final String PATH_UPDATE_BANK					="Bank!execute.web";

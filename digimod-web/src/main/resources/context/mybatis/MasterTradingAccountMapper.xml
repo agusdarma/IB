@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Copyright 2010 The myBatis Team Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<mapper namespace="id.co.emobile.samba.web.mapper.MasterTradingAccountMapper">	
+	<insert id="createMasterTradingAccount" parameterType="MasterTradingAccount" useGeneratedKeys="true" keyProperty="id">
+	    insert into master_trading_account(trading_account_no, trading_server,name,password_trading,password_investor,status,
+	    ib_user_code,created_by, created_on, updated_by, updated_on) 
+			values(#{tradingAccountNo}, #{tradingServer},#{name},#{passwordTrading},#{passwordInvestor},#{status},#{ibUserCode},
+				 	#{createdBy}, #{createdOn}, #{updatedBy}, #{updatedOn}) 
+    </insert>
+    
+    <update id="updateMasterTradingAccount" parameterType="MasterTradingAccount">
+		update master_trading_account 
+		set trading_account_no = #{tradingAccountNo},
+			trading_server = #{tradingServer},
+			name = #{name},
+			password_trading = #{passwordTrading},
+			password_investor = #{passwordInvestor},
+			status = #{status},
+			ib_user_code = #{ibUserCode},
+			updated_by = #{updatedBy},
+			updated_on = #{updatedOn}
+		where id=#{id} 
+    </update>
+    
+    <sql id="_fieldMasterTradingAccount">
+        mta.id as id,
+		mta.trading_account_no as tradingAccountNo,
+		mta.trading_server as tradingServer,
+		mta.name as name,
+		mta.password_trading as passwordTrading,
+		mta.password_investor as passwordInvestor,
+		mta.status as status,
+		mta.ib_user_code as ibUserCode,
+		mta.created_by as createdBy,
+		mta.created_on as createdOn,
+		mta.updated_by as updatedBy,
+		mta.updated_on as updatedOn
+    </sql>
+    
+    <select id="findAllMasterTradingAccount" resultType="MasterTradingAccount">
+		SELECT <include refid="_fieldMasterTradingAccount" />
+		FROM master_trading_account mta
+    	order by mta.updated_on desc
+    </select>
+    
+    <select id="findMasterTradingAccountById" resultType="MasterTradingAccount" parameterType="java.lang.Integer">
+		SELECT <include refid="_fieldMasterTradingAccount" />
+		FROM master_trading_account mta
+    	WHERE mta.id = #{value}
+    </select>
+    
+    <select id="findMasterTradingAccountByParam" resultType="MasterTradingAccount" parameterType="MasterTradingAccountParamVO">
+		SELECT <include refid="_fieldMasterTradingAccount" />
+			,@row_number:=@row_number+1 AS rowNum
+		FROM master_trading_account mta
+    		,(SELECT @row_number:=${rowStartMysql}) AS t
+    	<include refid="_sqlFindMasterTradingAccount" />    		
+    	ORDER BY ${sortVariable} ${sortOrder}
+  		limit #{rowStartMysql}, #{rowPerPage}
+    </select>
+    
+    <select id="countMasterTradingAccountByParam" resultType="java.lang.Integer" parameterType="MasterTradingAccountParamVO">
+		SELECT count(*)
+		FROM master_trading_account mta
+    	<include refid="_sqlFindMasterTradingAccount" />
+    </select>
+    
+    <sql id="_sqlFindMasterTradingAccount">
+    	<where>
+			<if test="name != null and name.length() > 0">
+				AND upper(mta.name) like #{nameLike}
+			</if>
+		</where>
+    </sql>
+    
+</mapper>
