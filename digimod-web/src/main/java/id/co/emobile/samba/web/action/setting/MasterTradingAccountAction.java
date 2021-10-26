@@ -16,28 +16,30 @@ import id.co.emobile.samba.web.data.UserDataLoginVO;
 import id.co.emobile.samba.web.data.WebConstants;
 import id.co.emobile.samba.web.data.WebResultVO;
 import id.co.emobile.samba.web.data.param.BankParamVO;
+import id.co.emobile.samba.web.data.param.MasterTradingAccountParamVO;
 import id.co.emobile.samba.web.data.param.ParamPagingVO;
 import id.co.emobile.samba.web.data.param.UserGroupParamVO;
+import id.co.emobile.samba.web.entity.MasterTradingAccount;
 import id.co.emobile.samba.web.entity.UserGroup;
 import id.co.emobile.samba.web.helper.WebModules;
 import id.co.emobile.samba.web.interceptor.ModuleCheckable;
+import id.co.emobile.samba.web.service.MasterTradingAccountService;
 import id.co.emobile.samba.web.service.SambaWebException;
-import id.co.emobile.samba.web.service.UserGroupService;
 
 public class MasterTradingAccountAction extends BaseListAction implements ModuleCheckable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(MasterTradingAccountAction.class);
 
 	@Autowired
-	private UserGroupService userGroupService;
+	private MasterTradingAccountService masterTradingAccountService;
 	
 	private WebResultVO wrv;
 
 	private String message;
 	private String json;
-	private List<UserGroup> listUserGroup;
-	private int groupId;
-	private UserGroup userGroup;
+	private List<MasterTradingAccount> listMasterTradingAccounts;
+	private int masterTradingAccountId;
+	private MasterTradingAccount masterTradingAccount;
 	
 	@Override
 	protected Logger getLogger() {
@@ -68,7 +70,7 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 		getLogger().info("Processing - > edit()");
 		// called when user needs to edit, to display input form
 		try {
-			userGroup = userGroupService.findUserGroupById(groupId);
+			masterTradingAccount = masterTradingAccountService.findMasterTradingAccountById(masterTradingAccountId);
 			return INPUT;
 		} catch (Exception e) {
 			handleException(e);
@@ -77,11 +79,11 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 	}
 
 	public String processInput(){
-		getLogger().debug("processing: process input() " + userGroup);
+		getLogger().debug("processing: process input() " + masterTradingAccount);
 		UserDataLoginVO loginVO = (UserDataLoginVO) session.get(LOGIN_KEY);
 		Locale language=(Locale) session.get(WEB_LOCALE_KEY);
 		try {				
-			wrv = userGroupService.insertOrUpdateUserGroup(userGroup, loginVO, language);
+			wrv = masterTradingAccountService.insertOrUpdateMasterTradingAccount(masterTradingAccount, loginVO, language);
 			if(wrv.getType()==WebConstants.TYPE_UPDATE)
 			{
 				setFlashMessage(wrv.getMessage());
@@ -121,43 +123,31 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 		this.wrv = wrv;
 	}
 	
-	public List<UserGroup> getListUserGroup() {
-		return listUserGroup;
-	}
+	
 
-	public void setListUserGroup(List<UserGroup> listUserGroup) {
-		this.listUserGroup = listUserGroup;
-	}
+	
 
-	public int getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
-	}
-
-	public UserGroup getUserGroup() {
-		if (userGroup == null){
+	public MasterTradingAccount getMasterTradingAccount() {
+		if (masterTradingAccount == null){
 			Object o = session.get(WEB_CONTENT_KEY);
-			if (o instanceof UserGroup)
-				userGroup = (UserGroup) o;
-			if (userGroup == null)
-				userGroup = new UserGroup();
+			if (o instanceof MasterTradingAccount)
+				masterTradingAccount = (MasterTradingAccount) o;
+			if (masterTradingAccount == null)
+				masterTradingAccount = new MasterTradingAccount();
 		}
-		return userGroup;
+		return masterTradingAccount;
 	}
 
-	public List<UserGroup> getListUserGroupAll() {
-		UserGroupParamVO userGroupParamVO = new UserGroupParamVO();
-		int size = userGroupService.countUserGroupByParam(userGroupParamVO);
-		userGroupParamVO.setRowStart(1);
-		userGroupParamVO.setRowEnd(100);		
-		userGroupParamVO.setRowPerPage(size);
-		userGroupParamVO.setSortVariable("ug.id");
-		userGroupParamVO.setSortOrder(WebConstants.SORT_ORDER_ASC);
+	public List<MasterTradingAccount> getListMasterTradingAccountAll() {
+		MasterTradingAccountParamVO masterTradingAccountParamVO = new MasterTradingAccountParamVO();
+		int size = masterTradingAccountService.countMasterTradingAccountByParam(masterTradingAccountParamVO);
+		masterTradingAccountParamVO.setRowStart(1);
+		masterTradingAccountParamVO.setRowEnd(100);		
+		masterTradingAccountParamVO.setRowPerPage(size);
+		masterTradingAccountParamVO.setSortVariable("mta.updated_on");
+		masterTradingAccountParamVO.setSortOrder(WebConstants.SORT_ORDER_DESC);
 		
-		List<UserGroup> listData = userGroupService.findUserGroupByParam(userGroupParamVO);
+		List<MasterTradingAccount> listData = masterTradingAccountService.findMasterTradingAccountByParam(masterTradingAccountParamVO);
 		LOG.debug("ListData size: {}", listData.size());
 		return listData;
 	}
@@ -167,25 +157,25 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 
 	public void makeTableContent()
 	{
-		prepareParamVO(new UserGroupParamVO(), WEB_PARAM_KEY + WebModules.MODULE_APPS_SETTING_USER_GROUP,
+		prepareParamVO(new MasterTradingAccountParamVO(), WEB_PARAM_KEY + WebModules.MODULE_MANAGE_TRADING_ACCOUNT,
 				"ug.id", WebConstants.SORT_ORDER_ASC);
 		String[] arrayHeader={getText("l.recordNo"), getText("l.groupName"), getText("l.groupDesc")};
 		String[] arrayBody={"rowNum", "groupName", "groupDesc"};
 		String[] arrayDbVariable={"", "ug.group_name", "ug.group_desc"};
 		List<LinkTableVO> listLinkTable=new ArrayList<LinkTableVO>();
-		listLinkTable.add(new LinkTableVO("UserGroup!detail.web", "groupName", new String[]{"groupId"}, new String[]{"id"}));
+		listLinkTable.add(new LinkTableVO("MstTradeAccount!detail.web", "name", new String[]{"masterTradingAccountId"}, new String[]{"id"}));
 
-		UserGroupParamVO userGroupParamVO = (UserGroupParamVO) paramVO;
-		int totalRow = userGroupService.countUserGroupByParam(userGroupParamVO);
-		listUserGroup = userGroupService.findUserGroupByParam(userGroupParamVO);
+		MasterTradingAccountParamVO masterTradingAccountParamVO = (MasterTradingAccountParamVO) paramVO;
+		int totalRow = masterTradingAccountService.countMasterTradingAccountByParam(masterTradingAccountParamVO);
+		listMasterTradingAccounts = masterTradingAccountService.findMasterTradingAccountByParam(masterTradingAccountParamVO);
 		Locale language =  (Locale) session.get(WEB_LOCALE_KEY);
 		try {
-			String bodyContent = objectMapper.writeValueAsString(listUserGroup);
-			resultSearchJson=webSearchResultService.composeSearchResult(getText("l.listUserGroup"), arrayHeader, arrayBody,
+			String bodyContent = objectMapper.writeValueAsString(listMasterTradingAccounts);
+			resultSearchJson=webSearchResultService.composeSearchResult(getText("l.listMasterTradingAccount"), arrayHeader, arrayBody,
 					arrayDbVariable, bodyContent, getCurrentPage(),
-					totalRow, listLinkTable, language, listUserGroup.size(), paramVO);
+					totalRow, listLinkTable, language, listMasterTradingAccounts.size(), paramVO);
 		} catch (Exception e) {
-			LOG.warn("Exception when serializing " + listUserGroup, e);
+			LOG.warn("Exception when serializing " + listMasterTradingAccounts, e);
 		}
 		
 	}
@@ -207,6 +197,22 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public List<MasterTradingAccount> getListMasterTradingAccounts() {
+		return listMasterTradingAccounts;
+	}
+
+	public void setListMasterTradingAccounts(List<MasterTradingAccount> listMasterTradingAccounts) {
+		this.listMasterTradingAccounts = listMasterTradingAccounts;
+	}
+
+	public int getMasterTradingAccountId() {
+		return masterTradingAccountId;
+	}
+
+	public void setMasterTradingAccountId(int masterTradingAccountId) {
+		this.masterTradingAccountId = masterTradingAccountId;
 	}
 
 	/**************************************   ESSENTIAL FOR SEARCH  *******************************************/

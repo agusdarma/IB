@@ -126,7 +126,7 @@ public class MasterTradingAccountService {
 		}
 	}
 
-	public int countUserGroupByParam(MasterTradingAccountParamVO paramVO) {
+	public int countMasterTradingAccountByParam(MasterTradingAccountParamVO paramVO) {
 		try {
 			int count = masterTradingAccountMapper.countMasterTradingAccountByParam(paramVO);
 			return count;

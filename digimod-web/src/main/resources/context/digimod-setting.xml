@@ -35,6 +35,20 @@
 			</result>
 		</action>
 		
+		<action name="MstTradeAccount!*" method="{1}" class="id.co.emobile.samba.web.action.setting.MasterTradingAccountAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/setting/master_trading_account_input.jsp</result>
+			<result name="search">WEB-INF/pages/setting/master_trading_account_search.jsp</result>
+			<result name="inputJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wrv</param>
+			</result>
+			<result name="searchJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wsr</param>
+			</result>
+		</action>
+		
 		<action name="SystemSetting!*" method="{1}" class="id.co.emobile.samba.web.action.setting.SystemSettingAction">
 			<interceptor-ref name="webSecureStack" />
 			<result name="input">WEB-INF/pages/setting/system_setting_input.jsp</result>
