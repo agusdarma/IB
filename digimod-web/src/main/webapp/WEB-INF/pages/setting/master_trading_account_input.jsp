@@ -52,6 +52,10 @@
                           <s:textfield maxlength="32" type="text" id="tradingAccountNo" name="masterTradingAccount.tradingAccountNo" cssClass="form-control form-control-lg" required="true" />
                         </div>
                         <div class="form-group">
+                          <label class="text-black"><b>Myfxbook Id</b></label>
+                          <s:textfield maxlength="32" type="text" id="myfxbookId" name="masterTradingAccount.myfxbookId" cssClass="form-control form-control-lg" required="true" />
+                        </div>
+                        <div class="form-group">
                           <label class="text-black"><b>Trading Server</b></label>
                           <s:textfield maxlength="32" type="text" id="tradingServer" name="masterTradingAccount.tradingServer" cssClass="form-control form-control-lg" required="true" />
                         </div>

@@ -9,6 +9,7 @@ public class MasterTradingAccount implements java.io.Serializable {
 
 	private int id;
 	private String tradingAccountNo;
+	private String myfxbookId;	
 	private String tradingServer;
 	private String name;
 	private String passwordTrading;
@@ -154,5 +155,13 @@ public class MasterTradingAccount implements java.io.Serializable {
 
 	public void setPctSharingProfit(String pctSharingProfit) {
 		this.pctSharingProfit = pctSharingProfit;
+	}
+
+	public String getMyfxbookId() {
+		return myfxbookId;
+	}
+
+	public void setMyfxbookId(String myfxbookId) {
+		this.myfxbookId = myfxbookId;
 	}
 }

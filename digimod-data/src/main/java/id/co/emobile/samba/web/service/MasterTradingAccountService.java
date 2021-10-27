@@ -48,6 +48,11 @@ public class MasterTradingAccountService {
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
 					new String[] { messageService.getMessageFor("l.tradingAccountNo") });
 		}
+		if (StringUtils.isEmpty(masterTradingAccount.getMyfxbookId())) {
+			LOGGER.warn("Myfxbook Id is empty !");
+			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
+					new String[] { messageService.getMessageFor("l.myfxbookId") });
+		}
 		if (StringUtils.isEmpty(masterTradingAccount.getTradingServer())) {
 			LOGGER.warn("Trading Server is empty !");
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
@@ -96,7 +101,7 @@ public class MasterTradingAccountService {
 			LOGGER.debug("update master trading account with data :" + masterTradingAccount);
 			try {
 				MasterTradingAccount original = findMasterTradingAccountById(masterTradingAccount.getId());
-
+				masterTradingAccount.setStatus(WebConstants.ACC_STATUS_ACTIVE);
 				masterTradingAccountMapper.updateMasterTradingAccount(masterTradingAccount);
 
 				String desc = "Update MasterTradingAccount " + masterTradingAccount.getName();

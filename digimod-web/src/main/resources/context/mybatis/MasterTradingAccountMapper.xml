@@ -12,15 +12,16 @@
 
 <mapper namespace="id.co.emobile.samba.web.mapper.MasterTradingAccountMapper">	
 	<insert id="createMasterTradingAccount" parameterType="MasterTradingAccount" useGeneratedKeys="true" keyProperty="id">
-	    insert into master_trading_account(trading_account_no, trading_server,name,password_trading,password_investor,status,
+	    insert into master_trading_account(trading_account_no,myfxbook_id trading_server,name,password_trading,password_investor,status,
 	    ib_user_code,created_by, created_on, updated_by, updated_on) 
-			values(#{tradingAccountNo}, #{tradingServer},#{name},#{passwordTrading},#{passwordInvestor},#{status},#{ibUserCode},
+			values(#{tradingAccountNo}, #{myfxbookId} , #{tradingServer},#{name},#{passwordTrading},#{passwordInvestor},#{status},#{ibUserCode},
 				 	#{createdBy}, #{createdOn}, #{updatedBy}, #{updatedOn}) 
     </insert>
     
     <update id="updateMasterTradingAccount" parameterType="MasterTradingAccount">
 		update master_trading_account 
 		set trading_account_no = #{tradingAccountNo},
+			myfxbook_id = #{myfxbookId},		
 			trading_server = #{tradingServer},
 			name = #{name},
 			password_trading = #{passwordTrading},
@@ -35,6 +36,7 @@
     <sql id="_fieldMasterTradingAccount">
         mta.id as id,
 		mta.trading_account_no as tradingAccountNo,
+		mta.myfxbook_id as myfxbookId,		
 		mta.trading_server as tradingServer,
 		mta.name as name,
 		mta.password_trading as passwordTrading,
