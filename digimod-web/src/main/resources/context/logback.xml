@@ -2,7 +2,7 @@
   <!-- 
   <property name="WEB_ROOT" value="${digimod-web.root}/WEB-INF/logs/" />
    -->
-  <property name="WEB_ROOT" value="C:\\Personal\\Project\\IB\\jets-digimod\\data_logs" />
+  <property name="WEB_ROOT" value="C:\\Personal\\Project\\IB\\IB\\data_logs" />
   
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <!-- encoders are assigned the type

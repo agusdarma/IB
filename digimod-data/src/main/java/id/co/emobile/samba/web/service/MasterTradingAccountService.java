@@ -58,9 +58,20 @@ public class MasterTradingAccountService {
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
 					new String[] { messageService.getMessageFor("l.accountName") });
 		}
+		if (StringUtils.isEmpty(masterTradingAccount.getPasswordTrading())) {
+			LOGGER.warn("Password Trading is empty !");
+			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
+					new String[] { messageService.getMessageFor("l.passwordTrading") });
+		}
+		if (StringUtils.isEmpty(masterTradingAccount.getPasswordInvestor())) {
+			LOGGER.warn("Password Investor is empty !");
+			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
+					new String[] { messageService.getMessageFor("l.passwordInvestor") });
+		}
 		if (masterTradingAccount.getId() == 0) {
 			masterTradingAccount.setCreatedBy(loginVO.getId());
 			masterTradingAccount.setCreatedOn(now);
+			masterTradingAccount.setStatus(WebConstants.ACC_STATUS_ACTIVE);
 			try {
 				masterTradingAccountMapper.createMasterTradingAccount(masterTradingAccount);
 

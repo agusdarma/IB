@@ -67,7 +67,7 @@
 				 	'0', '1', #{levelId}, #{groupId},#{branchId},
 				 	#{lastLoginOn}, #{passChangedOn}, #{hasChangePass} ,
 					'', #{createdOn}, #{createdBy},
-				 	#{updatedOn},  #{updatedBy},#{email}) ,#{pctSharingProfit}) 
+				 	#{updatedOn},  #{updatedBy},#{email} ,#{pctSharingProfit}) 
     </insert>
     
     <update id="updateNewUser" parameterType="UserData">
@@ -246,6 +246,12 @@
 		select <include refid="_sqlUserData"/>
 		from <include refid="_sqlUserDataFrom" />
 		where ud.user_status=1
+    </select>
+    
+    <select id="findListUserIbActive" resultType="UserData">
+		select <include refid="_sqlUserData"/>, CONCAT (ud.user_code, '-', ud.user_name) as userCodeUserNameDisplay
+		from <include refid="_sqlUserDataFrom" />
+		where ud.user_status=1 and ud.level_id = 2
     </select>
     
     <select id="findUserDataActiveByGroupAndLevelType" resultType="UserData" parameterType="java.util.Map">

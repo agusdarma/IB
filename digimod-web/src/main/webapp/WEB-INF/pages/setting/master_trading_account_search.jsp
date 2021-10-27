@@ -52,6 +52,10 @@
                             <tr>
                               <th scope="col">No</th>
                               <th scope="col">Nama Account</th>
+                              <th scope="col">Trading Account No</th>
+                              <th scope="col">IB User Code</th>
+                              <th scope="col">IB User Name</th>
+                              <th scope="col">Status</th>
                               <th scope="col"></th>
                             </tr>
                           </thead>
@@ -59,7 +63,12 @@
                           <s:iterator value="listMasterTradingAccountAll">
                             <tr>
                               <td><s:property value="rowNum" /></td>
-                              <td><s:property value="name" /></td>                             
+                              <td><s:property value="name" /></td>
+                              <td><s:property value="tradingAccountNo" /></td>
+                              <td><s:property value="ibUserCode" /></td>
+                              <td><s:property value="ibUserName" /></td>
+                              <td><s:property value="userStatusDisplay" /></td>   
+                                                        
                               <td>
                               	<s:url id="urlDetail" action="MstTradeAccount!detail">
                               		<s:param name="masterTradingAccountId" value="%{id}" />

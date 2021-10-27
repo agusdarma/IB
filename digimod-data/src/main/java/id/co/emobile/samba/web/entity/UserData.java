@@ -35,6 +35,7 @@ public class UserData implements java.io.Serializable {
     private String userLevelDisplay;
     private String groupName;
     private int rowNum;
+    private String userCodeUserNameDisplay;
     
     public String getNewPassword() {
 		return newPassword;
@@ -206,6 +207,12 @@ public class UserData implements java.io.Serializable {
 	}
 	public void setPctSharingProfit(double pctSharingProfit) {
 		this.pctSharingProfit = pctSharingProfit;
+	}
+	public String getUserCodeUserNameDisplay() {
+		return userCodeUserNameDisplay;
+	}
+	public void setUserCodeUserNameDisplay(String userCodeUserNameDisplay) {
+		this.userCodeUserNameDisplay = userCodeUserNameDisplay;
 	}
 	
 }

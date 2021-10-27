@@ -17,6 +17,7 @@ import id.co.emobile.samba.web.data.WebConstants;
 import id.co.emobile.samba.web.data.WebResultVO;
 import id.co.emobile.samba.web.data.param.UserDataParamVO;
 import id.co.emobile.samba.web.entity.UserData;
+import id.co.emobile.samba.web.entity.UserLevel;
 import id.co.emobile.samba.web.entity.UserPreference;
 import id.co.emobile.samba.web.mapper.UserDataMapper;
 import id.co.emobile.samba.web.mapper.UserPreferenceMapper;
@@ -41,21 +42,14 @@ public class UserDataService {
 	@Autowired
 	private UserPreferenceMapper userPreferenceMapper;
 
-//	@Autowired
-//	private PassHistoryMapper passHistoryMapper;
-
 	@Autowired
 	private UserActivityService userActivityService;
 	
-//	private UserData userData;
-
-//	public UserData getUserData() {
-//		return userData;
-//	}
-
-//	public void setUserData(UserData userData) {
-//		this.userData = userData;
-//	}
+	public List<UserData> getListUserIbActive() {
+		List<UserData> listUserIb = userDataMapper.findListUserIbActive();
+		return listUserIb;
+	}
+	
 
 	@Transactional(rollbackFor=Exception.class)
 	public WebResultVO changePassword(int userId, String oldPassword, String newPassword, String confirmPassword, Locale language, UserDataLoginVO loginVO)

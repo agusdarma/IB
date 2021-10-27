@@ -48,12 +48,28 @@
                     <div class="col-lg-4">
                       
                       	<div class="form-group">
-                          <label class="text-black"><b>Nama Group</b></label>
-                          <s:textfield maxlength="50" type="text" id="groupName" name="userGroup.groupName" cssClass="form-control form-control-lg" required="true" />
+                          <label class="text-black"><b>Trading Account No</b></label>
+                          <s:textfield maxlength="32" type="text" id="tradingAccountNo" name="masterTradingAccount.tradingAccountNo" cssClass="form-control form-control-lg" required="true" />
                         </div>
                         <div class="form-group">
-                          <label class="text-black"><b>Keterangan Group</b></label>
-                          <s:textfield maxlength="32" type="text" id="groupDesc" name="userGroup.groupDesc" cssClass="form-control form-control-lg" required="true" />
+                          <label class="text-black"><b>Trading Server</b></label>
+                          <s:textfield maxlength="32" type="text" id="tradingServer" name="masterTradingAccount.tradingServer" cssClass="form-control form-control-lg" required="true" />
+                        </div>
+                        <div class="form-group">
+                          <label class="text-black"><b>Account Name</b></label>
+                          <s:textfield maxlength="64" type="text" id="name" name="masterTradingAccount.name" cssClass="form-control form-control-lg" required="true" />
+                        </div>
+                        <div class="form-group">
+                          <label class="text-black"><b>Password Trading</b></label>
+                          <s:textfield maxlength="32" type="text" id="passwordTrading" name="masterTradingAccount.passwordTrading" cssClass="form-control form-control-lg" required="true" />
+                        </div>
+                        <div class="form-group">
+                          <label class="text-black"><b>Password Investor</b></label>
+                          <s:textfield maxlength="32" type="text" id="passwordInvestor" name="masterTradingAccount.passwordInvestor" cssClass="form-control form-control-lg" required="true" />
+                        </div>
+                        <div class="form-group">
+                          <label class="text-black"><b>IB UserCode</b></label>
+                          <s:select id="ibUserCode" name="masterTradingAccount.ibUserCode" list="listUserIb" listKey="userCode" listValue="userCodeUserNameDisplay" cssClass="form-control"/>
                         </div>
                     </div>
                   </div>

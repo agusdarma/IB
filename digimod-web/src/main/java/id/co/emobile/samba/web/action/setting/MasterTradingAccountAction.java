@@ -18,13 +18,13 @@ import id.co.emobile.samba.web.data.WebResultVO;
 import id.co.emobile.samba.web.data.param.BankParamVO;
 import id.co.emobile.samba.web.data.param.MasterTradingAccountParamVO;
 import id.co.emobile.samba.web.data.param.ParamPagingVO;
-import id.co.emobile.samba.web.data.param.UserGroupParamVO;
 import id.co.emobile.samba.web.entity.MasterTradingAccount;
-import id.co.emobile.samba.web.entity.UserGroup;
+import id.co.emobile.samba.web.entity.UserData;
 import id.co.emobile.samba.web.helper.WebModules;
 import id.co.emobile.samba.web.interceptor.ModuleCheckable;
 import id.co.emobile.samba.web.service.MasterTradingAccountService;
 import id.co.emobile.samba.web.service.SambaWebException;
+import id.co.emobile.samba.web.service.UserDataService;
 
 public class MasterTradingAccountAction extends BaseListAction implements ModuleCheckable {
 	private static final long serialVersionUID = 1L;
@@ -32,7 +32,10 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 
 	@Autowired
 	private MasterTradingAccountService masterTradingAccountService;
-	
+
+	@Autowired
+	private UserDataService userDataService;
+
 	private WebResultVO wrv;
 
 	private String message;
@@ -40,7 +43,7 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 	private List<MasterTradingAccount> listMasterTradingAccounts;
 	private int masterTradingAccountId;
 	private MasterTradingAccount masterTradingAccount;
-	
+
 	@Override
 	protected Logger getLogger() {
 		return LOG;
@@ -61,10 +64,10 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 		return SEARCH;
 	}
 
-	public String processSearch() {
-		makeTableContent();
-		return "searchJson";
-	}
+//	public String processSearch() {
+//		makeTableContent();
+//		return "searchJson";
+//	}
 
 	public String detail() {
 		getLogger().info("Processing - > edit()");
@@ -78,14 +81,14 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 		return SEARCH;
 	}
 
-	public String processInput(){
+	public String processInput() {
 		getLogger().debug("processing: process input() " + masterTradingAccount);
 		UserDataLoginVO loginVO = (UserDataLoginVO) session.get(LOGIN_KEY);
-		Locale language=(Locale) session.get(WEB_LOCALE_KEY);
-		try {				
-			wrv = masterTradingAccountService.insertOrUpdateMasterTradingAccount(masterTradingAccount, loginVO, language);
-			if(wrv.getType()==WebConstants.TYPE_UPDATE)
-			{
+		Locale language = (Locale) session.get(WEB_LOCALE_KEY);
+		try {
+			wrv = masterTradingAccountService.insertOrUpdateMasterTradingAccount(masterTradingAccount, loginVO,
+					language);
+			if (wrv.getType() == WebConstants.TYPE_UPDATE) {
 				setFlashMessage(wrv.getMessage());
 			}
 		} catch (SambaWebException gwe) {
@@ -122,13 +125,9 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 	public void setWrv(WebResultVO wrv) {
 		this.wrv = wrv;
 	}
-	
-	
-
-	
 
 	public MasterTradingAccount getMasterTradingAccount() {
-		if (masterTradingAccount == null){
+		if (masterTradingAccount == null) {
 			Object o = session.get(WEB_CONTENT_KEY);
 			if (o instanceof MasterTradingAccount)
 				masterTradingAccount = (MasterTradingAccount) o;
@@ -142,43 +141,52 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 		MasterTradingAccountParamVO masterTradingAccountParamVO = new MasterTradingAccountParamVO();
 		int size = masterTradingAccountService.countMasterTradingAccountByParam(masterTradingAccountParamVO);
 		masterTradingAccountParamVO.setRowStart(1);
-		masterTradingAccountParamVO.setRowEnd(100);		
+		masterTradingAccountParamVO.setRowEnd(100);
 		masterTradingAccountParamVO.setRowPerPage(size);
 		masterTradingAccountParamVO.setSortVariable("mta.updated_on");
 		masterTradingAccountParamVO.setSortOrder(WebConstants.SORT_ORDER_DESC);
-		
-		List<MasterTradingAccount> listData = masterTradingAccountService.findMasterTradingAccountByParam(masterTradingAccountParamVO);
+
+		List<MasterTradingAccount> listData = masterTradingAccountService
+				.findMasterTradingAccountByParam(masterTradingAccountParamVO);
 		LOG.debug("ListData size: {}", listData.size());
 		return listData;
 	}
 
-	/**************************************   ESSENTIAL FOR SEARCH  *******************************************/
+	public List<UserData> getListUserIb() {
+		List<UserData> listUserIb = userDataService.getListUserIbActive();
+		return listUserIb;
+	}
+
+	/**************************************
+	 * ESSENTIAL FOR SEARCH
+	 *******************************************/
 	private String resultSearchJson;
 
-	public void makeTableContent()
-	{
-		prepareParamVO(new MasterTradingAccountParamVO(), WEB_PARAM_KEY + WebModules.MODULE_MANAGE_TRADING_ACCOUNT,
-				"ug.id", WebConstants.SORT_ORDER_ASC);
-		String[] arrayHeader={getText("l.recordNo"), getText("l.groupName"), getText("l.groupDesc")};
-		String[] arrayBody={"rowNum", "groupName", "groupDesc"};
-		String[] arrayDbVariable={"", "ug.group_name", "ug.group_desc"};
-		List<LinkTableVO> listLinkTable=new ArrayList<LinkTableVO>();
-		listLinkTable.add(new LinkTableVO("MstTradeAccount!detail.web", "name", new String[]{"masterTradingAccountId"}, new String[]{"id"}));
-
-		MasterTradingAccountParamVO masterTradingAccountParamVO = (MasterTradingAccountParamVO) paramVO;
-		int totalRow = masterTradingAccountService.countMasterTradingAccountByParam(masterTradingAccountParamVO);
-		listMasterTradingAccounts = masterTradingAccountService.findMasterTradingAccountByParam(masterTradingAccountParamVO);
-		Locale language =  (Locale) session.get(WEB_LOCALE_KEY);
-		try {
-			String bodyContent = objectMapper.writeValueAsString(listMasterTradingAccounts);
-			resultSearchJson=webSearchResultService.composeSearchResult(getText("l.listMasterTradingAccount"), arrayHeader, arrayBody,
-					arrayDbVariable, bodyContent, getCurrentPage(),
-					totalRow, listLinkTable, language, listMasterTradingAccounts.size(), paramVO);
-		} catch (Exception e) {
-			LOG.warn("Exception when serializing " + listMasterTradingAccounts, e);
-		}
-		
-	}
+//	public void makeTableContent() {
+//		prepareParamVO(new MasterTradingAccountParamVO(), WEB_PARAM_KEY + WebModules.MODULE_MANAGE_TRADING_ACCOUNT,
+//				"ug.id", WebConstants.SORT_ORDER_ASC);
+//		String[] arrayHeader = { getText("l.recordNo"), getText("l.groupName"), getText("l.groupDesc") };
+//		String[] arrayBody = { "rowNum", "groupName", "groupDesc" };
+//		String[] arrayDbVariable = { "", "ug.group_name", "ug.group_desc" };
+//		List<LinkTableVO> listLinkTable = new ArrayList<LinkTableVO>();
+//		listLinkTable.add(new LinkTableVO("MstTradeAccount!detail.web", "name",
+//				new String[] { "masterTradingAccountId" }, new String[] { "id" }));
+//
+//		MasterTradingAccountParamVO masterTradingAccountParamVO = (MasterTradingAccountParamVO) paramVO;
+//		int totalRow = masterTradingAccountService.countMasterTradingAccountByParam(masterTradingAccountParamVO);
+//		listMasterTradingAccounts = masterTradingAccountService
+//				.findMasterTradingAccountByParam(masterTradingAccountParamVO);
+//		Locale language = (Locale) session.get(WEB_LOCALE_KEY);
+//		try {
+//			String bodyContent = objectMapper.writeValueAsString(listMasterTradingAccounts);
+//			resultSearchJson = webSearchResultService.composeSearchResult(getText("l.listMasterTradingAccount"),
+//					arrayHeader, arrayBody, arrayDbVariable, bodyContent, getCurrentPage(), totalRow, listLinkTable,
+//					language, listMasterTradingAccounts.size(), paramVO);
+//		} catch (Exception e) {
+//			LOG.warn("Exception when serializing " + listMasterTradingAccounts, e);
+//		}
+//
+//	}
 
 	@Override
 	public ParamPagingVO getParamVO() {
@@ -215,5 +223,7 @@ public class MasterTradingAccountAction extends BaseListAction implements Module
 		this.masterTradingAccountId = masterTradingAccountId;
 	}
 
-	/**************************************   ESSENTIAL FOR SEARCH  *******************************************/
+	/**************************************
+	 * ESSENTIAL FOR SEARCH
+	 *******************************************/
 }

@@ -14,11 +14,15 @@ public class MasterTradingAccount implements java.io.Serializable {
 	private String passwordTrading;
 	private String passwordInvestor;
 	private String ibUserCode;
+	private String ibUserName;
 	private int status;
+	private String userStatusDisplay;
 	private Date createdOn;
 	private int createdBy;
 	private Date updatedOn;
 	private int updatedBy;
+	private int rowNum;
+	
 
 	public int getId() {
 		return id;
@@ -118,5 +122,29 @@ public class MasterTradingAccount implements java.io.Serializable {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getIbUserName() {
+		return ibUserName;
+	}
+
+	public void setIbUserName(String ibUserName) {
+		this.ibUserName = ibUserName;
+	}
+
+	public String getUserStatusDisplay() {
+		return userStatusDisplay;
+	}
+
+	public void setUserStatusDisplay(String userStatusDisplay) {
+		this.userStatusDisplay = userStatusDisplay;
+	}
+
+	public int getRowNum() {
+		return rowNum;
+	}
+
+	public void setRowNum(int rowNum) {
+		this.rowNum = rowNum;
 	}
 }

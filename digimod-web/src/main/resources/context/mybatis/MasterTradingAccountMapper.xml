@@ -44,7 +44,7 @@
 		mta.created_by as createdBy,
 		mta.created_on as createdOn,
 		mta.updated_by as updatedBy,
-		mta.updated_on as updatedOn
+		mta.updated_on as updatedOn		
     </sql>
     
     <select id="findAllMasterTradingAccount" resultType="MasterTradingAccount">
@@ -61,8 +61,12 @@
     
     <select id="findMasterTradingAccountByParam" resultType="MasterTradingAccount" parameterType="MasterTradingAccountParamVO">
 		SELECT <include refid="_fieldMasterTradingAccount" />
+		,l.lookup_desc as userStatusDisplay,
+		ud.user_name as ibUserName
 			,@row_number:=@row_number+1 AS rowNum
 		FROM master_trading_account mta
+			inner join user_data ud on mta.ib_user_code = ud.user_code and ud.level_id=2
+			left join lookup_data l on mta.status=l.lookup_value and l.lookup_cat = 1
     		,(SELECT @row_number:=${rowStartMysql}) AS t
     	<include refid="_sqlFindMasterTradingAccount" />    		
     	ORDER BY ${sortVariable} ${sortOrder}
@@ -72,6 +76,8 @@
     <select id="countMasterTradingAccountByParam" resultType="java.lang.Integer" parameterType="MasterTradingAccountParamVO">
 		SELECT count(*)
 		FROM master_trading_account mta
+			inner join user_data ud on mta.ib_user_code = ud.user_code and ud.level_id=2
+			left join lookup_data l on mta.status=l.lookup_value and l.lookup_cat = 1
     	<include refid="_sqlFindMasterTradingAccount" />
     </select>
     

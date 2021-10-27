@@ -37,6 +37,9 @@ public interface UserDataMapper {
 	public int updateLastAccess(UserData userData);
 	
 	public List<UserData> findUserDataActive();
+	
+	public List<UserData> findListUserIbActive();
+	
 	public List<UserData> findUserDataActiveByGroupAndLevelType(@Param("groupId") int groupId, @Param("levelType") int levelType);
 	public List<UserData> findUserDataApprovalActiveForGroup(int groupId);
 }
