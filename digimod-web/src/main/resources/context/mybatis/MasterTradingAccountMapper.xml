@@ -62,7 +62,8 @@
     <select id="findMasterTradingAccountByParam" resultType="MasterTradingAccount" parameterType="MasterTradingAccountParamVO">
 		SELECT <include refid="_fieldMasterTradingAccount" />
 		,l.lookup_desc as userStatusDisplay,
-		ud.user_name as ibUserName
+		ud.user_name as ibUserName,
+		ud.pct_sharing_profit as pctSharingProfit
 			,@row_number:=@row_number+1 AS rowNum
 		FROM master_trading_account mta
 			inner join user_data ud on mta.ib_user_code = ud.user_code and ud.level_id=2

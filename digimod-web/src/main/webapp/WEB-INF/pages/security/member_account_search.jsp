@@ -55,6 +55,7 @@
                               <th scope="col">Trading Account No</th>
                               <th scope="col">IB User Code</th>
                               <th scope="col">IB User Name</th>
+                              <th scope="col">% Sharing Profit</th>
                               <th scope="col">Status</th>                              
                             </tr>
                           </thead>
@@ -66,6 +67,7 @@
                               <td><s:property value="tradingAccountNo" /></td>
                               <td><s:property value="ibUserCode" /></td>
                               <td><s:property value="ibUserName" /></td>
+                              <td><s:property value="pctSharingProfit" /></td>
                               <td><s:property value="userStatusDisplay" /></td>                                                                                       
                             </tr>
                           </s:iterator>

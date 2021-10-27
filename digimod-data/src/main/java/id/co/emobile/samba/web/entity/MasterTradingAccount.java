@@ -22,7 +22,7 @@ public class MasterTradingAccount implements java.io.Serializable {
 	private Date updatedOn;
 	private int updatedBy;
 	private int rowNum;
-	
+	private String pctSharingProfit;
 
 	public int getId() {
 		return id;
@@ -146,5 +146,13 @@ public class MasterTradingAccount implements java.io.Serializable {
 
 	public void setRowNum(int rowNum) {
 		this.rowNum = rowNum;
+	}
+
+	public String getPctSharingProfit() {
+		return pctSharingProfit;
+	}
+
+	public void setPctSharingProfit(String pctSharingProfit) {
+		this.pctSharingProfit = pctSharingProfit;
 	}
 }
