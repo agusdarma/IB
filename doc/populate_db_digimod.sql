@@ -29,6 +29,8 @@ insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, me
 values (103, 1, 2, 3, 'icon_change_password.png', 'Change Password', 'ChangePassword', 'Security Module', 1);
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
 values (104, 1, 2, 4, 'icon_manage_user.png', 'Reset Password', 'ResetPassword', 'Security Module', 0);
+insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
+values (106, 1, 2, 5, 'icon_manage_user.png', 'Manage Member', 'ManageMember', 'Security Module', 0);
 
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
 values (201, 2, 2, 1, 'icon_manage_user.png', 'Manage Source Account', 'SourceAccount', 'System Support Module', 0);
@@ -163,6 +165,10 @@ Insert into lookup_data (lookup_cat,lookup_value,lookup_desc,lookup_order,update
 
 
 -- // system setting for WEB
+insert into system_setting(id, setting_name, setting_desc, setting_value, value_type, updated_by, updated_on)
+values(40, 'Email MyFxBook', 'Email MyFxBook', 'agusdk2011@gmail.com', 'STRING', 1, now());
+insert into system_setting(id, setting_name, setting_desc, setting_value, value_type, updated_by, updated_on)
+values(41, 'Password MyFxBook', 'Password MyFxBook', 'r4H4s14181014', 'STRING', 1, now());
 insert into system_setting(id, setting_name, setting_desc, setting_value, value_type, updated_by, updated_on)
 values(51, 'Max Invalid Login', 'Determine How Many invalid login user try before being blocked', '3', 'INT', 1, now());
 insert into system_setting(id, setting_name, setting_desc, setting_value, value_type, updated_by, updated_on)

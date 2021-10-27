@@ -10,6 +10,7 @@ public class MasterTradingAccountParamVO extends ParamPagingVO {
 	}
 
 	private String name;
+	private String ibUserCode;
 
 	public String getNameLike() {
 		if (StringUtils.isNotBlank(name)) {
@@ -24,5 +25,13 @@ public class MasterTradingAccountParamVO extends ParamPagingVO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getIbUserCode() {
+		return ibUserCode;
+	}
+
+	public void setIbUserCode(String ibUserCode) {
+		this.ibUserCode = ibUserCode;
 	}
 }

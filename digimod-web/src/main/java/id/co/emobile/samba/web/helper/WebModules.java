@@ -4,8 +4,10 @@ public class WebModules {
 	public static final int MODULE_SECURITY_MANAGE_USER				= 101;
 	public static final int MODULE_SECURITY_MANAGE_LEVEL			= 102;
 	public static final int MODULE_SECURITY_CHANGE_PASSWORD			= 103;
-	public static final int MODULE_SECURITY_USER_PREFERENCE			= 105;
 	public static final int MODULE_SECURITY_RESET_PASSWORD			= 104;
+	public static final int MODULE_SECURITY_USER_PREFERENCE			= 105;
+	public static final int MODULE_SECURITY_MANAGE_MEMBER			= 106;
+	
 
 	public static final int MODULE_APPS_SETTING_SOURCE_ACCOUNT 		= 201;
 	public static final int MODULE_APPS_SETTING_USER_GROUP	 		= 202;

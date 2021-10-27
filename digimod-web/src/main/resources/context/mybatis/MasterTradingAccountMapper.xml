@@ -86,6 +86,9 @@
 			<if test="name != null and name.length() > 0">
 				AND upper(mta.name) like #{nameLike}
 			</if>
+			<if test="ibUserCode != null and ibUserCode.length() > 0">
+				AND upper(mta.ib_user_code) = #{ibUserCode}
+			</if>
 		</where>
     </sql>
     
