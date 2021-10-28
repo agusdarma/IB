@@ -9,7 +9,7 @@ public interface HistoryTradingMapper {
 
 	public int updateHistoryTrading(HistoryTrading historyTrading);
 
-	public HistoryTrading findBankByBankCode(@Param("symbol") String symbol, @Param("openTime") String openTime,
+	public HistoryTrading findHistoryTrading(@Param("symbol") String symbol, @Param("openTime") String openTime,
 			@Param("closeTime") String closeTime);
 
 }

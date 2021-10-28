@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="id.co.emobile.samba.web.mapper.HistoryTradingMapper">	
+	<insert id="createHistoryTrading" parameterType="HistoryTrading" useGeneratedKeys="true" keyProperty="id">
+	    insert into history_trading(symbol, open_time, close_time, 
+	    			action, size_lot, open_price, close_price, profit, myfxbook_id) 
+			values(#{symbol}, #{openTime}, #{closeTime}, 
+					#{action}, #{sizeLot}, #{openPrice}, #{closePrice}, #{profit}, #{myfxbookId}) 
+    </insert>
+    
+    <update id="updateHistoryTrading" parameterType="HistoryTrading">
+		update history_trading 
+		set symbol = #{symbol},
+			open_time = #{openTime},
+			close_time = #{closeTime},
+			action = #{action},
+			size_lot = #{sizeLot},
+			open_price = #{openPrice},
+			close_price = #{closePrice},
+			profit = #{profit},
+			myfxbook_id = #{myfxbookId}
+		where id=#{id} 
+    </update>
+    
+    <sql id="_sqlHistoryTrading">
+        b.id as id,
+		b.symbol as symbol,
+		b.open_time as openTime,
+		b.close_time as closeTime,
+		b.action as action,
+		b.size_lot as sizeLot,
+		b.open_price as openPrice,
+		b.close_price as closePrice,
+		b.profit as profit,
+		b.myfxbook_id as myfxbookId
+    </sql>
+    
+    <select id="findHistoryTrading" resultType="HistoryTrading" parameterType="java.lang.String">
+		SELECT <include refid="_sqlHistoryTrading" />
+		FROM history_trading b		
+    	WHERE b.symbol = #{symbol} 
+    	and b.open_time = #{openTime} 
+    	and b.close_time = #{closeTime}
+    </select>
+    
+</mapper>
