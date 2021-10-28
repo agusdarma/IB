@@ -15,9 +15,11 @@ import id.co.emobile.samba.web.data.MyFxBookLoginResponseVO;
 import id.co.emobile.samba.web.data.ResponseData;
 import id.co.emobile.samba.web.data.WebConstants;
 import id.co.emobile.samba.web.data.param.MasterTradingAccountParamVO;
+import id.co.emobile.samba.web.entity.HistoryTrading;
 import id.co.emobile.samba.web.entity.MasterTradingAccount;
 import id.co.emobile.samba.web.entity.UserData;
 import id.co.emobile.samba.web.http.HttpTransmitterAgent;
+import id.co.emobile.samba.web.mapper.HistoryTradingMapper;
 import id.co.emobile.samba.web.service.MasterTradingAccountService;
 import id.co.emobile.samba.web.service.UserDataService;
 
@@ -38,6 +40,9 @@ public class SyncHistoryTransactionJob {
 
 	@Autowired
 	private MasterTradingAccountService masterTradingAccountService;
+
+	@Autowired
+	private HistoryTradingMapper historyTradingMapper;
 
 	public void syncHistoryTransaction() {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -61,13 +66,45 @@ public class SyncHistoryTransactionJob {
 				getLogger().info("                   -> Member Name : " + tradingAccount.getName());
 				HistoryTradingRoot history = handleHistoryTradingByMyFxBookId(
 						getHistoryTradingByMyFxBookId(tradingAccount.getMyfxbookId(), loginResponse.getSession()));
-//				getLogger().info("history : " + history.toString());
+//				getLogger().info("history : " + history.getHistory().size());
+				insertUpdateHistory(history, tradingAccount.getMyfxbookId());
 			}
 
 		}
 		MyFxBookLoginResponseVO logoutResponse = handleLogoutResponseMyFxBook(logout(loginResponse.getSession()));
 		getLogger().info("logoutResponse " + logoutResponse);
 		getLogger().info("Sync history transaction finished.");
+	}
+
+	private void insertUpdateHistory(HistoryTradingRoot history, String myfxBookId) {
+		for (int i = 0; i < history.getHistory().size(); i++) {
+
+			String symbol = history.getHistory().get(i).getSymbol();
+			String openTime = history.getHistory().get(i).getOpenTime();
+			String closeTime = history.getHistory().get(i).getCloseTime();
+
+			HistoryTrading historyTrading = historyTradingMapper.findHistoryTrading(symbol, openTime, closeTime,
+					myfxBookId);
+			if (historyTrading == null) {
+				if (history.getHistory().get(i).getAction().equalsIgnoreCase("Sell")
+						|| history.getHistory().get(i).getAction().equalsIgnoreCase("Buy")) {
+					historyTrading = new HistoryTrading();
+					historyTrading.setSymbol(history.getHistory().get(i).getSymbol());
+					historyTrading.setAction(history.getHistory().get(i).getAction());
+					historyTrading.setClosePrice(history.getHistory().get(i).getClosePrice());
+					historyTrading.setCloseTime(history.getHistory().get(i).getCloseTime());
+					historyTrading.setMyfxbookId(myfxBookId);
+					historyTrading.setOpenPrice(history.getHistory().get(i).getOpenPrice());
+					historyTrading.setOpenTime(history.getHistory().get(i).getOpenTime());
+					historyTrading.setProfit(history.getHistory().get(i).getProfit());
+					historyTrading.setSizeLot(history.getHistory().get(i).getSizing().getValue());
+					historyTradingMapper.createHistoryTrading(historyTrading);
+				}
+
+			}
+
+		}
+		getLogger().info("insertUpdateHistory success with " + myfxBookId);
 	}
 
 	private ResponseData login() {

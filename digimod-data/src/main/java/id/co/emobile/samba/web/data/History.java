@@ -59,26 +59,26 @@ public class History {
 	Sizing sizing;
 
 	@JsonProperty("openPrice")
-	public double getOpenPrice() {
+	public String getOpenPrice() {
 		return this.openPrice;
 	}
 
-	public void setOpenPrice(double openPrice) {
+	public void setOpenPrice(String openPrice) {
 		this.openPrice = openPrice;
 	}
 
-	double openPrice;
+	String openPrice;
 
 	@JsonProperty("closePrice")
-	public double getClosePrice() {
+	public String getClosePrice() {
 		return this.closePrice;
 	}
 
-	public void setClosePrice(double closePrice) {
+	public void setClosePrice(String closePrice) {
 		this.closePrice = closePrice;
 	}
 
-	double closePrice;
+	String closePrice;
 
 	@JsonProperty("tp")
 	public double getTp() {
@@ -114,15 +114,15 @@ public class History {
 	double pips;
 
 	@JsonProperty("profit")
-	public double getProfit() {
+	public String getProfit() {
 		return this.profit;
 	}
 
-	public void setProfit(double profit) {
+	public void setProfit(String profit) {
 		this.profit = profit;
 	}
 
-	double profit;
+	String profit;
 
 	@JsonProperty("comment")
 	public String getComment() {

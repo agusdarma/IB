@@ -45,6 +45,7 @@
     	WHERE b.symbol = #{symbol} 
     	and b.open_time = #{openTime} 
     	and b.close_time = #{closeTime}
+    	and b.myfxbook_id = #{myfxbookId}
     </select>
     
 </mapper>

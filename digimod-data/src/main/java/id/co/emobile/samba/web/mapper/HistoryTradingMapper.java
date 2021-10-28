@@ -10,6 +10,6 @@ public interface HistoryTradingMapper {
 	public int updateHistoryTrading(HistoryTrading historyTrading);
 
 	public HistoryTrading findHistoryTrading(@Param("symbol") String symbol, @Param("openTime") String openTime,
-			@Param("closeTime") String closeTime);
+			@Param("closeTime") String closeTime,@Param("myfxbookId") String myfxbookId);
 
 }
