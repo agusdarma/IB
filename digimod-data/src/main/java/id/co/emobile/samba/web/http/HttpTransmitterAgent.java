@@ -8,9 +8,9 @@ import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -267,7 +267,7 @@ public class HttpTransmitterAgent {
 		return sendPostMultipleHeaderMessage(destUrl, null, content, null, null);
 	}
 	
-	public ResponseData sendGetMessage(String destUrl, Map<String, String> params) {
+	public ResponseData sendGetMessage(String destUrl, HashMap<String, String> params) {
 		List<NameValuePair> listData = new ArrayList<NameValuePair>();
 		Iterator<String> iter = params.keySet().iterator();
 		while (iter.hasNext()) {
@@ -314,7 +314,7 @@ public class HttpTransmitterAgent {
 			}			
 			httpGet = new HttpGet(builder.build());
 			if (listHeader == null) {
-				LOG.info("[{}] Execute GET to {}, Params: {}", id, realUrl, sb.toString());	
+//				LOG.info("[{}] Execute GET to {}, Params: {}", id, realUrl, sb.toString());	
 			} else {
 				StringBuilder sbHeader = new StringBuilder();
 				for (NameValuePair header: listHeader) {
@@ -324,7 +324,7 @@ public class HttpTransmitterAgent {
 					else
 						sbHeader.append(header.getName()).append("=").append(header.getValue()).append(",");	
 				}
-				LOG.info("[{}] Execute GET to {}, Params: {}, Headers: {}", id, realUrl, sb.toString(), sbHeader.toString());
+//				LOG.info("[{}] Execute GET to {}, Params: {}, Headers: {}", id, realUrl, sb.toString(), sbHeader.toString());
 			}
 		} catch (URISyntaxException us) {
 			LOG.warn("[{}] URL [{}] is not valid", id, realUrl);
@@ -360,7 +360,7 @@ public class HttpTransmitterAgent {
             } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK ||
             		response.getStatusLine().getStatusCode() == HttpStatus.SC_ACCEPTED) {
 				String respString = EntityUtils.toString(response.getEntity());
-                LOG.info("[{}] Response: {}", id, respString);
+//                LOG.info("[{}] Response: {}", id, respString);
                 
                 respData.setResultCode(0);
                 respData.setMsgToUser(respString);

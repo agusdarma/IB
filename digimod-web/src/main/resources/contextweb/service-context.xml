@@ -113,9 +113,13 @@
 		
 	<!-- ========================= SCHEDULER ========================= -->
 	<bean id="syncTimeJob" class="id.co.emobile.samba.web.job.SyncTimeJob" init-method="syncTime" />
+	
+	<bean id="syncHistoryTransactionJob" class="id.co.emobile.samba.web.job.SyncHistoryTransactionJob" init-method="syncHistoryTransaction" />
 
 	<task:scheduled-tasks scheduler="systemScheduler">
-		 <task:scheduled ref="syncTimeJob" method="syncTime" cron="0 0 * * * ?"/>	  
+		 <task:scheduled ref="syncTimeJob" method="syncTime" cron="0 0 * * * ?"/>
+		 
+		 <task:scheduled ref="syncHistoryTransactionJob" method="syncHistoryTransaction" cron="0 0/5 * * * ?"/>	  
 		 
 		 <!-- run every 5 minutes -->
 	    <!--  <task:scheduled ref="sddBtiManager" method="checkConnection" cron="0 0/5 * * * ?"/>

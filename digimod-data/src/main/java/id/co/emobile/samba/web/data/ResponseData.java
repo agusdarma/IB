@@ -11,6 +11,7 @@ public class ResponseData implements java.io.Serializable {
 	private String msgToUser;
 	private String sysMessage;
 	
+	
 	public int getResultCode() {
 		return resultCode;
 	}
@@ -42,7 +43,7 @@ public class ResponseData implements java.io.Serializable {
 		return "ResponseData@" + Integer.toHexString(hashCode()) 
 				+ "[resultCode=" + resultCode 
 				+ ", msgToUser=" + CommonUtil.maskNumberForMessage(msgToUser)
-				+ ", sysMessage=" + sysMessage 
+				+ ", sysMessage=" + sysMessage 				
 				+ "]";
 	}
 	

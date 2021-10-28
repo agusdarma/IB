@@ -5,6 +5,18 @@ import java.util.Map;
 
 public class WebConstants {
 	
+	public static final String HTTP_KEY_EMAIL		= "email";
+	public static final String HTTP_KEY_PASSWORD	= "password";
+	public static final String HTTP_KEY_SESSION		= "session";
+	public static final String HTTP_KEY_MYFXBOOKID	= "id";
+	
+	public static final String MYFXBOOK_EMAIL		= "agusdk2011@gmail.com";
+	public static final String MYFXBOOK_PASSWORD	= "r4H4s14181014";
+	public static final String MYFXBOOK_URL_LOGIN	= "https://www.myfxbook.com/api/login.json";
+	public static final String MYFXBOOK_URL_LOGOUT	= "https://www.myfxbook.com/api/logout.json";
+	public static final String MYFXBOOK_URL_GET_HISTORY_TRADING	= "https://www.myfxbook.com/api/get-history.json";
+	
+	
 	public static final int INQ		= 1;
 	public static final int SETT	= 0;
 	public static final String WEB_PARAM_BIT48_KEY		= "WEB_PARAM_BIT48_KEY";

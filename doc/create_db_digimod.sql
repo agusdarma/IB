@@ -273,3 +273,18 @@ CREATE TABLE master_trading_account
  updated_by INT NOT NULL,
  PRIMARY KEY (id)
 );
+
+CREATE TABLE history_trading
+(
+ id INT AUTO_INCREMENT NOT NULL,
+ symbol VARCHAR(16) NOT NULL,
+ open_time VARCHAR(32) NOT NULL,
+ close_time VARCHAR(32) NOT NULL,
+ action VARCHAR(16) NOT NULL,
+ size_lot VARCHAR(16) NOT NULL,
+ open_price VARCHAR(16) NOT NULL,
+ close_price VARCHAR(16) NOT NULL,
+ profit VARCHAR(16) NOT NULL,
+ myfxbook_id VARCHAR(16) NOT NULL,
+ PRIMARY KEY (id)
+);
