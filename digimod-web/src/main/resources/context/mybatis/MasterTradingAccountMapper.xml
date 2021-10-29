@@ -12,7 +12,7 @@
 
 <mapper namespace="id.co.emobile.samba.web.mapper.MasterTradingAccountMapper">	
 	<insert id="createMasterTradingAccount" parameterType="MasterTradingAccount" useGeneratedKeys="true" keyProperty="id">
-	    insert into master_trading_account(trading_account_no,myfxbook_id trading_server,name,password_trading,password_investor,status,
+	    insert into master_trading_account(trading_account_no,myfxbook_id, trading_server,name,password_trading,password_investor,status,
 	    ib_user_code,created_by, created_on, updated_by, updated_on) 
 			values(#{tradingAccountNo}, #{myfxbookId} , #{tradingServer},#{name},#{passwordTrading},#{passwordInvestor},#{status},#{ibUserCode},
 				 	#{createdBy}, #{createdOn}, #{updatedBy}, #{updatedOn}) 

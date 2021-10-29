@@ -137,7 +137,7 @@ public class SyncHistoryTransactionJob {
 	}
 
 	private MyFxBookLoginResponseVO handleLoginResponseMyFxBook(ResponseData responseData) {
-		getLogger().info("handleLoginResponseMyFxBook with data " + responseData.getMsgToUser());
+//		getLogger().info("handleLoginResponseMyFxBook with data " + responseData.getMsgToUser());
 		MyFxBookLoginResponseVO myFxBookLoginResponseVO = new MyFxBookLoginResponseVO();
 		try {
 			myFxBookLoginResponseVO = objectMapper.readValue(responseData.getMsgToUser(),
@@ -145,7 +145,7 @@ public class SyncHistoryTransactionJob {
 		} catch (Exception e) {
 			getLogger().error("Error exception handleLoginResponseMyFxBook " + e.toString());
 		}
-		getLogger().info("MyFxBookLoginResponseVO -> " + myFxBookLoginResponseVO);
+//		getLogger().info("MyFxBookLoginResponseVO -> " + myFxBookLoginResponseVO);
 		return myFxBookLoginResponseVO;
 	}
 
