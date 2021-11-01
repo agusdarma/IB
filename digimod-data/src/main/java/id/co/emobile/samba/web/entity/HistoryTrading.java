@@ -15,6 +15,10 @@ public class HistoryTrading implements java.io.Serializable {
 	private String closePrice;
 	private String profit;
 	private String myfxbookId;
+	private String totalCommission;
+	private String companyCommission;
+	private String clientCommission;
+	
 
 	public int getId() {
 		return id;
@@ -98,5 +102,29 @@ public class HistoryTrading implements java.io.Serializable {
 
 	public void setMyfxbookId(String myfxbookId) {
 		this.myfxbookId = myfxbookId;
+	}
+
+	public String getTotalCommission() {
+		return totalCommission;
+	}
+
+	public void setTotalCommission(String totalCommission) {
+		this.totalCommission = totalCommission;
+	}
+
+	public String getCompanyCommission() {
+		return companyCommission;
+	}
+
+	public void setCompanyCommission(String companyCommission) {
+		this.companyCommission = companyCommission;
+	}
+
+	public String getClientCommission() {
+		return clientCommission;
+	}
+
+	public void setClientCommission(String clientCommission) {
+		this.clientCommission = clientCommission;
 	}
 }

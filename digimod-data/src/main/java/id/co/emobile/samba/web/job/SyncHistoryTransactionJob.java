@@ -2,6 +2,7 @@ package id.co.emobile.samba.web.job;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import id.co.emobile.samba.web.entity.MasterTradingAccount;
 import id.co.emobile.samba.web.entity.UserData;
 import id.co.emobile.samba.web.http.HttpTransmitterAgent;
 import id.co.emobile.samba.web.mapper.HistoryTradingMapper;
+import id.co.emobile.samba.web.service.CalculateCommissionService;
 import id.co.emobile.samba.web.service.MasterTradingAccountService;
 import id.co.emobile.samba.web.service.UserDataService;
 
@@ -39,6 +41,9 @@ public class SyncHistoryTransactionJob {
 	private UserDataService userDataService;
 
 	@Autowired
+	private CalculateCommissionService calculateCommissionService;
+
+	@Autowired
 	private MasterTradingAccountService masterTradingAccountService;
 
 	@Autowired
@@ -47,6 +52,7 @@ public class SyncHistoryTransactionJob {
 	public void syncHistoryTransaction() {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		getLogger().info("Start sync history transaction");
+		long time = System.currentTimeMillis();
 		MyFxBookLoginResponseVO loginResponse = handleLoginResponseMyFxBook(login());
 		List<UserData> listIb = userDataService.getListUserIbActive();
 
@@ -67,16 +73,25 @@ public class SyncHistoryTransactionJob {
 				HistoryTradingRoot history = handleHistoryTradingByMyFxBookId(
 						getHistoryTradingByMyFxBookId(tradingAccount.getMyfxbookId(), loginResponse.getSession()));
 //				getLogger().info("history : " + history.getHistory().size());
-				insertUpdateHistory(history, tradingAccount.getMyfxbookId());
+				insertUpdateHistory(history, tradingAccount);
 			}
 
 		}
-		MyFxBookLoginResponseVO logoutResponse = handleLogoutResponseMyFxBook(logout(loginResponse.getSession()));
-		getLogger().info("logoutResponse " + logoutResponse);
-		getLogger().info("Sync history transaction finished.");
+				
+		time = System.currentTimeMillis() - time;		
+		getLogger().info("Sync history transaction finished took " + time + " milliseconds");
+		try {
+			TimeUnit.SECONDS.sleep(5);
+			MyFxBookLoginResponseVO logoutResponse = handleLogoutResponseMyFxBook(logout(loginResponse.getSession()));
+			getLogger().info("logoutResponse " + logoutResponse);
+		} catch (Exception e) {
+			getLogger().error("Error exception logout " + e.toString());
+		}
+		
+		
 	}
 
-	private void insertUpdateHistory(HistoryTradingRoot history, String myfxBookId) {
+	private void insertUpdateHistory(HistoryTradingRoot history, MasterTradingAccount tradingAccount) {
 		for (int i = 0; i < history.getHistory().size(); i++) {
 
 			String symbol = history.getHistory().get(i).getSymbol();
@@ -84,7 +99,7 @@ public class SyncHistoryTransactionJob {
 			String closeTime = history.getHistory().get(i).getCloseTime();
 
 			HistoryTrading historyTrading = historyTradingMapper.findHistoryTrading(symbol, openTime, closeTime,
-					myfxBookId);
+					tradingAccount.getMyfxbookId());
 			if (historyTrading == null) {
 				if (history.getHistory().get(i).getAction().equalsIgnoreCase("Sell")
 						|| history.getHistory().get(i).getAction().equalsIgnoreCase("Buy")) {
@@ -93,18 +108,26 @@ public class SyncHistoryTransactionJob {
 					historyTrading.setAction(history.getHistory().get(i).getAction());
 					historyTrading.setClosePrice(history.getHistory().get(i).getClosePrice());
 					historyTrading.setCloseTime(history.getHistory().get(i).getCloseTime());
-					historyTrading.setMyfxbookId(myfxBookId);
+					historyTrading.setMyfxbookId(tradingAccount.getMyfxbookId());
 					historyTrading.setOpenPrice(history.getHistory().get(i).getOpenPrice());
 					historyTrading.setOpenTime(history.getHistory().get(i).getOpenTime());
 					historyTrading.setProfit(history.getHistory().get(i).getProfit());
 					historyTrading.setSizeLot(history.getHistory().get(i).getSizing().getValue());
+
+					// hitung komisi total
+					historyTrading.setTotalCommission(calculateCommissionService.calculateTotalCommission(historyTrading, tradingAccount));
+					// hitung komisi perusahaan/comapny
+					historyTrading.setCompanyCommission(calculateCommissionService.calculateCompanyCommission(historyTrading.getTotalCommission(), tradingAccount));
+					// hitung komisi client
+					historyTrading.setClientCommission(calculateCommissionService.calculateClientCommission(historyTrading.getTotalCommission(), tradingAccount));
+
 					historyTradingMapper.createHistoryTrading(historyTrading);
 				}
 
 			}
 
 		}
-		getLogger().info("insertUpdateHistory success with " + myfxBookId);
+		getLogger().info("insertUpdateHistory success with " + tradingAccount.getMyfxbookId());
 	}
 
 	private ResponseData login() {
@@ -150,7 +173,7 @@ public class SyncHistoryTransactionJob {
 	}
 
 	private MyFxBookLoginResponseVO handleLogoutResponseMyFxBook(ResponseData responseData) {
-//		getLogger().info("handleLogoutResponseMyFxBook with data " + responseData.getMsgToUser());
+		getLogger().info("handleLogoutResponseMyFxBook with data " + responseData.getMsgToUser());
 		MyFxBookLoginResponseVO myFxBookLoginResponseVO = new MyFxBookLoginResponseVO();
 		try {
 			myFxBookLoginResponseVO = objectMapper.readValue(responseData.getMsgToUser(),

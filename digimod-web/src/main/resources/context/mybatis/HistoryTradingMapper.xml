@@ -7,9 +7,9 @@
 <mapper namespace="id.co.emobile.samba.web.mapper.HistoryTradingMapper">	
 	<insert id="createHistoryTrading" parameterType="HistoryTrading" useGeneratedKeys="true" keyProperty="id">
 	    insert into history_trading(symbol, open_time, close_time, 
-	    			action, size_lot, open_price, close_price, profit, myfxbook_id) 
+	    			action, size_lot, open_price, close_price, profit, myfxbook_id,total_commission,company_commission,client_commission) 
 			values(#{symbol}, #{openTime}, #{closeTime}, 
-					#{action}, #{sizeLot}, #{openPrice}, #{closePrice}, #{profit}, #{myfxbookId}) 
+					#{action}, #{sizeLot}, #{openPrice}, #{closePrice}, #{profit}, #{myfxbookId}, #{totalCommission}, #{companyCommission}, #{clientCommission}) 
     </insert>
     
     <update id="updateHistoryTrading" parameterType="HistoryTrading">
@@ -22,6 +22,9 @@
 			open_price = #{openPrice},
 			close_price = #{closePrice},
 			profit = #{profit},
+			total_commission = #{totalCommission},
+			company_commission = #{companyCommission},
+			client_commission = #{clientCommission},
 			myfxbook_id = #{myfxbookId}
 		where id=#{id} 
     </update>
@@ -36,6 +39,9 @@
 		b.open_price as openPrice,
 		b.close_price as closePrice,
 		b.profit as profit,
+		b.total_commission as totalCommission,
+		b.company_commission as companyCommission,
+		b.client_commission as clientCommission,
 		b.myfxbook_id as myfxbookId
     </sql>
     
