@@ -46,32 +46,37 @@ public class MasterTradingAccountService {
 		if (StringUtils.isEmpty(masterTradingAccount.getTradingAccountNo())) {
 			LOGGER.warn("Trading Account No is empty !");
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
-					new String[] { messageService.getMessageFor("l.tradingAccountNo") });
+					new String[] { messageService.getMessageFor("e.tradingAccountNo") });
 		}
 		if (StringUtils.isEmpty(masterTradingAccount.getMyfxbookId())) {
 			LOGGER.warn("Myfxbook Id is empty !");
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
-					new String[] { messageService.getMessageFor("l.myfxbookId") });
+					new String[] { messageService.getMessageFor("e.myfxbookId") });
 		}
 		if (StringUtils.isEmpty(masterTradingAccount.getTradingServer())) {
 			LOGGER.warn("Trading Server is empty !");
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
-					new String[] { messageService.getMessageFor("l.tradingServer") });
+					new String[] { messageService.getMessageFor("e.tradingServer") });
 		}
 		if (StringUtils.isEmpty(masterTradingAccount.getName())) {
 			LOGGER.warn("Account Name is empty !");
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
-					new String[] { messageService.getMessageFor("l.accountName") });
+					new String[] { messageService.getMessageFor("e.accountName") });
 		}
 		if (StringUtils.isEmpty(masterTradingAccount.getPasswordTrading())) {
 			LOGGER.warn("Password Trading is empty !");
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
-					new String[] { messageService.getMessageFor("l.passwordTrading") });
+					new String[] { messageService.getMessageFor("e.passwordTrading") });
 		}
 		if (StringUtils.isEmpty(masterTradingAccount.getPasswordInvestor())) {
 			LOGGER.warn("Password Investor is empty !");
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
-					new String[] { messageService.getMessageFor("l.passwordInvestor") });
+					new String[] { messageService.getMessageFor("e.passwordInvestor") });
+		}
+		if (masterTradingAccount.getCommissionInDollar() < 1) {
+			LOGGER.warn("Commission value must larger than 0 !");
+			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
+					new String[] { messageService.getMessageFor("e.commissionInDollar") });
 		}
 		if (masterTradingAccount.getId() == 0) {
 			masterTradingAccount.setCreatedBy(loginVO.getId());

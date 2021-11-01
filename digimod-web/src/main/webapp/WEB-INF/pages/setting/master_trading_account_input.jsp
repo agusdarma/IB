@@ -72,6 +72,10 @@
                           <s:textfield maxlength="32" type="text" id="passwordInvestor" name="masterTradingAccount.passwordInvestor" cssClass="form-control form-control-lg" required="true" />
                         </div>
                         <div class="form-group">
+                          <label class="text-black"><b>Commission ($)</b></label>
+                          <s:textfield maxlength="2" type="text" id="commissionInDollar" name="masterTradingAccount.commissionInDollar" cssClass="form-control form-control-lg" required="true" />
+                        </div>
+                        <div class="form-group">
                           <label class="text-black"><b>IB UserCode</b></label>
                           <s:select id="ibUserCode" name="masterTradingAccount.ibUserCode" list="listUserIb" listKey="userCode" listValue="userCodeUserNameDisplay" cssClass="form-control"/>
                         </div>

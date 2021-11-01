@@ -24,6 +24,7 @@ public class MasterTradingAccount implements java.io.Serializable {
 	private int updatedBy;
 	private int rowNum;
 	private String pctSharingProfit;
+	private int commissionInDollar;
 
 	public int getId() {
 		return id;
@@ -163,5 +164,13 @@ public class MasterTradingAccount implements java.io.Serializable {
 
 	public void setMyfxbookId(String myfxbookId) {
 		this.myfxbookId = myfxbookId;
+	}
+
+	public int getCommissionInDollar() {
+		return commissionInDollar;
+	}
+
+	public void setCommissionInDollar(int commissionInDollar) {
+		this.commissionInDollar = commissionInDollar;
 	}
 }

@@ -1,6 +1,8 @@
 ALTER TABLE user_data ADD branch_id INT ,
 ALTER TABLE user_data ADD email VARCHAR(100)
 ALTER TABLE master_trading_account ADD myfxbook_id VARCHAR(32)
+ALTER TABLE master_trading_account ADD commission_in_dollar INT NOT NULL DEFAULT 2,
+
 
 ALTER TABLE user_data ADD pct_sharing_profit DOUBLE(2,1)
 

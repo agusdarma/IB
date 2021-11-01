@@ -12,9 +12,9 @@
 
 <mapper namespace="id.co.emobile.samba.web.mapper.MasterTradingAccountMapper">	
 	<insert id="createMasterTradingAccount" parameterType="MasterTradingAccount" useGeneratedKeys="true" keyProperty="id">
-	    insert into master_trading_account(trading_account_no,myfxbook_id, trading_server,name,password_trading,password_investor,status,
+	    insert into master_trading_account(trading_account_no,myfxbook_id, trading_server,name,password_trading,password_investor,commission_in_dollar,status,
 	    ib_user_code,created_by, created_on, updated_by, updated_on) 
-			values(#{tradingAccountNo}, #{myfxbookId} , #{tradingServer},#{name},#{passwordTrading},#{passwordInvestor},#{status},#{ibUserCode},
+			values(#{tradingAccountNo}, #{myfxbookId} , #{tradingServer},#{name},#{passwordTrading},#{passwordInvestor},#{commissionInDollar},#{status},#{ibUserCode},
 				 	#{createdBy}, #{createdOn}, #{updatedBy}, #{updatedOn}) 
     </insert>
     
@@ -26,6 +26,7 @@
 			name = #{name},
 			password_trading = #{passwordTrading},
 			password_investor = #{passwordInvestor},
+			commission_in_dollar = #{commissionInDollar},
 			status = #{status},
 			ib_user_code = #{ibUserCode},
 			updated_by = #{updatedBy},
@@ -41,6 +42,7 @@
 		mta.name as name,
 		mta.password_trading as passwordTrading,
 		mta.password_investor as passwordInvestor,
+		mta.commission_in_dollar as commissionInDollar,
 		mta.status as status,
 		mta.ib_user_code as ibUserCode,
 		mta.created_by as createdBy,
