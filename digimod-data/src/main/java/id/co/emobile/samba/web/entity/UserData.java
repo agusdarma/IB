@@ -13,6 +13,8 @@ public class UserData implements java.io.Serializable {
     private String phoneNo;
     private String email;
     private double pctSharingProfit;
+    private String totalClientCommission;
+    private String clientCommissionWithdrawn;
     private int invalidCount;  // invalid_count INT NOT NULL,
     private int userStatus;  // user_status INT NOT NULL,
     private int levelId;  // level_id INT NOT NULL,
@@ -214,5 +216,18 @@ public class UserData implements java.io.Serializable {
 	public void setUserCodeUserNameDisplay(String userCodeUserNameDisplay) {
 		this.userCodeUserNameDisplay = userCodeUserNameDisplay;
 	}
+	public String getTotalClientCommission() {
+		return totalClientCommission;
+	}
+	public void setTotalClientCommission(String totalClientCommission) {
+		this.totalClientCommission = totalClientCommission;
+	}
+	public String getClientCommissionWithdrawn() {
+		return clientCommissionWithdrawn;
+	}
+	public void setClientCommissionWithdrawn(String clientCommissionWithdrawn) {
+		this.clientCommissionWithdrawn = clientCommissionWithdrawn;
+	}
+	
 	
 }

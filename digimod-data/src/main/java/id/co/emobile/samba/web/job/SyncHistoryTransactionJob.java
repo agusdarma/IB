@@ -1,5 +1,7 @@
 package id.co.emobile.samba.web.job;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +23,7 @@ import id.co.emobile.samba.web.entity.MasterTradingAccount;
 import id.co.emobile.samba.web.entity.UserData;
 import id.co.emobile.samba.web.http.HttpTransmitterAgent;
 import id.co.emobile.samba.web.mapper.HistoryTradingMapper;
+import id.co.emobile.samba.web.mapper.UserDataMapper;
 import id.co.emobile.samba.web.service.CalculateCommissionService;
 import id.co.emobile.samba.web.service.MasterTradingAccountService;
 import id.co.emobile.samba.web.service.UserDataService;
@@ -39,6 +42,9 @@ public class SyncHistoryTransactionJob {
 
 	@Autowired
 	private UserDataService userDataService;
+	
+	@Autowired
+	private UserDataMapper userDataMapper;
 
 	@Autowired
 	private CalculateCommissionService calculateCommissionService;
@@ -92,8 +98,20 @@ public class SyncHistoryTransactionJob {
 	}
 
 	private void insertUpdateHistory(HistoryTradingRoot history, MasterTradingAccount tradingAccount) {
-		for (int i = 0; i < history.getHistory().size(); i++) {
+		DecimalFormat df = new DecimalFormat("#.##");
+	    df.setRoundingMode(RoundingMode.FLOOR);
+		UserData userIb = userDataMapper.findUserDataByUserCode(tradingAccount.getIbUserCode());
+		double clientCommissionDouble = 0;
+		if(userIb.getTotalClientCommission() != null) {
+			try {
+				clientCommissionDouble = Double.parseDouble(userIb.getTotalClientCommission());	
+			} catch (Exception e) {
 
+			}			
+		}
+		
+		for (int i = 0; i < history.getHistory().size(); i++) {
+			
 			String symbol = history.getHistory().get(i).getSymbol();
 			String openTime = history.getHistory().get(i).getOpenTime();
 			String closeTime = history.getHistory().get(i).getCloseTime();
@@ -120,13 +138,21 @@ public class SyncHistoryTransactionJob {
 					historyTrading.setCompanyCommission(calculateCommissionService.calculateCompanyCommission(historyTrading.getTotalCommission(), tradingAccount));
 					// hitung komisi client
 					historyTrading.setClientCommission(calculateCommissionService.calculateClientCommission(historyTrading.getTotalCommission(), tradingAccount));
-
+					
+					
+				    double result = new Double(df.format(Double.parseDouble(historyTrading.getClientCommission())));					
+					clientCommissionDouble = clientCommissionDouble + result;					
 					historyTradingMapper.createHistoryTrading(historyTrading);
 				}
 
 			}
 
 		}
+		
+	    double result = new Double(df.format(clientCommissionDouble));
+		userIb.setTotalClientCommission(Double.toString(result));
+		getLogger().info("userIb updated " + userIb.getTotalClientCommission());
+		userDataMapper.updateCommission(userIb);
 		getLogger().info("insertUpdateHistory success with " + tradingAccount.getMyfxbookId());
 	}
 

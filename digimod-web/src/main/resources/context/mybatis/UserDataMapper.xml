@@ -26,10 +26,10 @@
   		</selectKey>
 		insert into user_data(id, user_code, user_name, user_password, phone_no, invalid_count, 
 			user_status, level_id, group_id,branch_id, last_login_on, pass_changed_on, has_change_pass, user_status,
-			session_id, created_on, created_by, updated_on, updated_by,email,pct_sharing_profit)
+			session_id, created_on, created_by, updated_on, updated_by,email,pct_sharing_profit,total_client_commission,client_commission_withdrawn)
 		values(#{id}, #{userCode}, #{userName}, #{userPassword}, #{phoneNo}, #{invalidCount}, 
 			#{userStatus}, #{levelId}, #{groupId},#{branchId}, #{lastLoginOn}, #{passChangedOn}, #{hasChangePass}, #{userStatus},
-			#{sessionId}, #{createdOn}, #{createdBy}, #{updatedOn}, #{updatedBy},#{email},#{pctSharingProfit})
+			#{sessionId}, #{createdOn}, #{createdBy}, #{updatedOn}, #{updatedBy},#{email},#{pctSharingProfit},#{totalClientCommission},#{clientCommissionWithdrawn})
     </insert>
     
     <update id="updateUserData" parameterType="UserData">
@@ -48,9 +48,18 @@
 			has_change_pass=#{hasChangePass}, 
 			session_id=#{sessionId},
 			email=#{email},
-			pct_sharing_profit=#{pctSharingProfit}, 
+			pct_sharing_profit=#{pctSharingProfit},
+			total_client_commission=#{totalClientCommission},
+			client_commission_withdrawn=#{clientCommissionWithdrawn}, 
 			updated_on=#{updatedOn}, 
 			updated_by=#{updatedBy}
+        where id = #{id}
+    </update>
+    
+    <update id="updateCommission" parameterType="UserData">
+    	update user_data set
+			total_client_commission=#{totalClientCommission},
+			client_commission_withdrawn=#{clientCommissionWithdrawn}
         where id = #{id}
     </update>
     
@@ -62,12 +71,12 @@
 				 	invalid_count, user_status, level_id, group_id,branch_id, 
 				 	last_login_on, pass_changed_on, has_change_pass,
 				 	session_id, created_on, created_by,
-				 	updated_on, updated_by,email,pct_sharing_profit) 
+				 	updated_on, updated_by,email,pct_sharing_profit,total_client_commission,client_commission_withdrawn) 
 			values(#{id}, #{userCode}, #{userName}, #{userPassword}, #{phoneNo},
 				 	'0', '1', #{levelId}, #{groupId},#{branchId},
 				 	#{lastLoginOn}, #{passChangedOn}, #{hasChangePass} ,
 					'', #{createdOn}, #{createdBy},
-				 	#{updatedOn},  #{updatedBy},#{email} ,#{pctSharingProfit}) 
+				 	#{updatedOn},  #{updatedBy},#{email} ,#{pctSharingProfit},#{totalClientCommission},#{clientCommissionWithdrawn}) 
     </insert>
     
     <update id="updateNewUser" parameterType="UserData">
@@ -82,6 +91,8 @@
 			updated_by = #{updatedBy},
 			email = #{email},
 			pct_sharing_profit = #{pctSharingProfit},
+			total_client_commission=#{totalClientCommission},
+			client_commission_withdrawn=#{clientCommissionWithdrawn}, 
 			updated_on = #{updatedOn}
 		where id=#{id} 
     </update>
@@ -107,6 +118,8 @@
 		ud.updated_by as updatedBy,
 		ud.email as email,
 		ud.pct_sharing_profit as pctSharingProfit,
+		ud.total_client_commission as totalClientCommission,
+		ud.client_commission_withdrawn as clientCommissionWithdrawn,
 		l.lookup_desc as userStatusDisplay,
 		ul.level_name as userLevelDisplay,
 		ud.last_access_on as lastAccessOn,
@@ -231,6 +244,8 @@
 			ud.updated_by as updatedBy,
 			ud.email as email,
 			ud.pct_sharing_profit as pctSharingProfit,
+			ud.total_client_commission as totalClientCommission,
+			ud.client_commission_withdrawn as clientCommissionWithdrawn,
 			ud.last_access_on as lastAccessOn
 		FROM user_data ud
 		WHERE ud.id = #{value}

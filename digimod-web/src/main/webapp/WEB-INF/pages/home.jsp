@@ -85,6 +85,30 @@
                       </s:a>
                       </div>
                     </div>
+                    <div class="card bg-blue text-white shadow mt-2">
+                      <div class="card-body">
+                        <div class="row text-white">
+                          <div class="ml-4">
+                            <i class="fas fa-dollar-sign" style="font-size: 1.5em"></i>
+                          </div>
+                          <div class="ml-4">
+                            <b>Total Commission :</b> <b>$</b><b><s:property value="%{#session.LOGIN_KEY.totalClientCommission}" /></b>
+                          </div>                         
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card bg-red text-white shadow mt-2">
+                      <div class="card-body">
+                        <div class="row text-white">
+                          <div class="ml-4">
+                            <i class="fas fa-dollar-sign" style="font-size: 1.5em"></i>
+                          </div>
+                          <div class="ml-4">
+                            <b>Total Have Been Withdrawn :</b> <b>$</b><b><s:property value="%{#session.LOGIN_KEY.clientCommissionWithdrawn}" /></b>
+                          </div>                         
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="col-lg-6 mb-4 mt-4">
                   <%-- 

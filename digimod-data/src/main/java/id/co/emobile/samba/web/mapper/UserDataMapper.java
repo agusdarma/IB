@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 public interface UserDataMapper {
 	public int createUserData(UserData userData);
 	public int updateUserData(UserData userData);
+	public int updateCommission(UserData userData);
 	
 	public int updateResetPassword(UserData userData);
 	

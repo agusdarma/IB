@@ -165,6 +165,8 @@ public class UserDataService {
 			try {
 				userData.setCreatedBy(loginVO.getId());
 				userData.setCreatedOn(now);
+				userData.setTotalClientCommission("0");
+				userData.setClientCommissionWithdrawn("0");
 				validateInput(userData, userData.getUserPassword(), confirmPassword);
 				userData.setUserPassword(SecureUtils.passwordDigest(userData.getUserCode().trim(), userData.getUserPassword()));
 				userData.setHasChangePass(false);
