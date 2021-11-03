@@ -57,6 +57,12 @@
     	order by mta.updated_on desc
     </select>
     
+    <select id="findAllMasterTradingAccountByIbUser" resultType="MasterTradingAccount" parameterType="java.lang.String">
+		SELECT <include refid="_fieldMasterTradingAccount" />
+		FROM master_trading_account mta where mta.ib_user_code = #{value}
+    	order by mta.updated_on desc
+    </select>
+    
     <select id="findMasterTradingAccountById" resultType="MasterTradingAccount" parameterType="java.lang.Integer">
 		SELECT <include refid="_fieldMasterTradingAccount" />
 		FROM master_trading_account mta

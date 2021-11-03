@@ -29,5 +29,6 @@ public class WebModules {
 	
 	public static final int MODULE_REPORT_DIST_MONEY				= 401;
 	public static final int MODULE_REPORT_USER_ACTIVITY				= 402;
+	public static final int MODULE_REPORT_MEMBER_TRX				= 403;
 }
 

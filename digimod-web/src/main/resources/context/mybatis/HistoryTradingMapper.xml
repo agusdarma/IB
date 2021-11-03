@@ -54,4 +54,33 @@
     	and b.myfxbook_id = #{myfxbookId}
     </select>
     
+    <select id="selectHistoryTradingByParam" resultType="HistoryTrading" parameterType="MemberTrxReportParamVO">
+		SELECT <include refid="_sqlHistoryTrading" />
+		FROM history_trading b		
+		<include refid="_sqlSelectionHistoryTrading" />
+		order by b.myfxbook_id, b.close_time desc
+		limit #{rowStartMysql},#{rowPerPage}
+    </select>
+    
+    <select id="selectHistoryTradingByParamNoPaging" resultType="HistoryTrading" parameterType="MemberTrxReportParamVO">
+		SELECT <include refid="_sqlHistoryTrading" />
+		FROM history_trading b		
+		<include refid="_sqlSelectionHistoryTrading" />
+		order by b.myfxbook_id, b.close_time desc
+    </select>
+    
+    <sql id="_sqlSelectionHistoryTrading">
+		<where>
+		    <if test="startDate != null">
+		 		and b.close_time >= #{startDate}
+			</if>
+			<if test="endDate != null">
+		 		and b.close_time &lt;= #{endDate}
+			</if>    
+			 <if test="userDataId > 0">
+		 		and b.myfxbook_id = #{userDataId}
+			</if>
+		</where>
+	</sql>
+    
 </mapper>

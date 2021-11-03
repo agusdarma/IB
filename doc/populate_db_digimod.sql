@@ -68,6 +68,8 @@ insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, me
 values (401, 4, 2, 1, 'icon_manage_user.png', 'Laporan Distribusi Uang', 'DistMoneyReport', 'Reporting Module', 0);
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
 values (402, 4, 2, 1, 'icon_manage_user.png', 'Laporan Aktivitas User', 'UserActivityReport', 'Reporting Module', 0);
+insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
+values (403, 4, 2, 3, 'icon_manage_user.png', 'Laporan Transaksi Member', 'MemberTransactionReport', 'Reporting Module', 0);
 
 --#######################################################USER LEVEL MENU##############################################
 insert into user_level_menu(menu_id, level_id) values(1,1);

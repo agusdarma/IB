@@ -58,5 +58,19 @@
              </result>    
 		</action>
 		
+		<action name="MemberTransactionReport!*" method="{1}" class="id.co.emobile.samba.web.action.report.MemberTrxReportAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="search">/WEB-INF/pages/report/member_transaction_report.jsp</result>
+			
+			<result name="EXPORT" type="jasper">
+            	<param name="location">/WEB-INF/pages/report/jasper/member_transaction_report.jasper</param>
+	            <param name="contentDisposition">attachment</param>
+	            <param name="documentName">${documentName}</param>
+            	<param name="dataSource">listUserActivity</param>
+            	<param name="reportParameters">reportParameters</param>
+            	<param name="format">${exportType}</param> <!-- format consist of PDF XLS CSV -->
+             </result>    
+		</action>
+		
 	</package>
 </struts>

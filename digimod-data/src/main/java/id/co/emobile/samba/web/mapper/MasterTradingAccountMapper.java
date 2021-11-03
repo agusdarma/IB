@@ -11,6 +11,8 @@ public interface MasterTradingAccountMapper {
 	public int updateMasterTradingAccount(MasterTradingAccount masterTradingAccount);
 
 	public MasterTradingAccount findMasterTradingAccountById(int id);
+	
+	public List<MasterTradingAccount> findAllMasterTradingAccountByIbUser(String userCode);
 
 	public List<MasterTradingAccount> findAllMasterTradingAccount();
 
