@@ -71,11 +71,11 @@
 		 					<div class="form-group row">
 							  <label for="example-date-input" class="col-2 col-form-label">Tanggal</label>
 							  <div class="col-4">
-							  	<s:textfield id="startDate" name="startDate" cssClass="form-control" />
+							  	<s:textfield id="startDate" name="paramVO.startDate" cssClass="form-control" />
 							  </div>
 							  <label class="col-1 col-form-label text-center"> - </label>					
 							  <div class="col-4">
-							  	<s:textfield id="endDate" name="endDate" cssClass="form-control" />
+							  	<s:textfield id="endDate" name="paramVO.endDate" cssClass="form-control" />
 							  </div>					  
 							</div>
 							<div class="form-group row">
@@ -106,19 +106,25 @@
                         <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
                           <thead>
                             <tr>
-                              <th scope="col">Tanggal</th>
-                              <th scope="col">User</th>
-                              <th scope="col">Deskripsi</th>
-                              <th scope="col">IP</th>
+                              <th scope="col">Symbol</th>
+                              <th scope="col">Open Time</th>
+                              <th scope="col">Close Time</th>
+                              <th scope="col">Lot</th>
+                              <th scope="col">Profit</th>
+                              <th scope="col">$ Commission</th>
                             </tr>
                           </thead>
                           <tbody>
-                          <s:iterator value="listUserActivity">
-                          	<tr>
-                              <td><s:text name="u.datetime"><s:param name="value" value="createdOn" /></s:text></td>
-                              <td>[<s:property value="userCode" />] <s:property value="userName" /></td>
-                              <td><s:property value="description" /></td>
-                              <td><s:property value="ipAddress" /></td>
+                          <s:iterator value="listHistoryTrading">
+                          	<tr>                              
+                              <td><s:property value="symbol" /></td>
+                              <td><s:property value="openTime" /></td>
+                              <td><s:property value="closeTime" /></td>
+                              <td><s:property value="sizeLot" /></td>
+                              <td><s:property value="profit" /></td>
+                              <td><s:property value="clientCommission" /></td>
+                              
+                              
                             </tr>
                           </s:iterator>
                           </tbody>

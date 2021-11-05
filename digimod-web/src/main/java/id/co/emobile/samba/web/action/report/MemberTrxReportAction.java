@@ -16,12 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import id.co.emobile.samba.web.action.BaseListAction;
+import id.co.emobile.samba.web.data.LinkTableVO;
 import id.co.emobile.samba.web.data.UserDataLoginVO;
+import id.co.emobile.samba.web.data.WebConstants;
 import id.co.emobile.samba.web.data.param.MemberTrxReportParamVO;
 import id.co.emobile.samba.web.data.param.ParamPagingVO;
 import id.co.emobile.samba.web.entity.HistoryTrading;
 import id.co.emobile.samba.web.entity.MasterTradingAccount;
-import id.co.emobile.samba.web.entity.UserData;
 import id.co.emobile.samba.web.helper.WebModules;
 import id.co.emobile.samba.web.interceptor.ModuleCheckable;
 import id.co.emobile.samba.web.mapper.HistoryTradingMapper;
@@ -41,11 +42,9 @@ public class MemberTrxReportAction extends BaseListAction implements ModuleCheck
 
 	@Autowired
 	private UserDataService userDataService;
-	
+
 	@Autowired
 	private MasterTradingAccountMapper masterTradingAccountMapper;
-	
-	
 
 	private List<HistoryTrading> listHistoryTrading;
 
@@ -79,7 +78,12 @@ public class MemberTrxReportAction extends BaseListAction implements ModuleCheck
 	public String processSearch() {
 		try {
 			getLogger().debug("processSearch: {}", paramVO);
-			listHistoryTrading = historyTradingMapper.selectHistoryTradingByParam(paramVO);
+			getLogger().debug("rowStartMysql: {}", paramVO.getRowStartMysql());
+			getLogger().debug("rowPerPage: {}", paramVO.getRowPerPage());
+			getLogger().debug("startDate: {}", paramVO.getStartDate());
+			getLogger().debug("endDate: {}", paramVO.getEndDate());
+			getLogger().debug("userDataId: {}", paramVO.getUserDataId());
+			listHistoryTrading = historyTradingMapper.selectHistoryTradingByParamNoPaging(paramVO);
 
 		} catch (Exception e) {
 			getLogger().warn("Exception in processSearch " + paramVO, e);
@@ -127,9 +131,11 @@ public class MemberTrxReportAction extends BaseListAction implements ModuleCheck
 		UserDataLoginVO loginVO = (UserDataLoginVO) session.get(LOGIN_KEY);
 		Map<String, String> mapUser = new LinkedHashMap<String, String>();
 		mapUser.put("0", "Semua Member");
-		List<MasterTradingAccount> listMasterTradingAccounts = masterTradingAccountMapper.findAllMasterTradingAccountByIbUser(loginVO.getUserCode());
+		List<MasterTradingAccount> listMasterTradingAccounts = masterTradingAccountMapper
+				.findAllMasterTradingAccountByIbUser(loginVO.getUserCode());
 		for (MasterTradingAccount masterTradingAccount : listMasterTradingAccounts) {
-			mapUser.put("" + masterTradingAccount.getMyfxbookId(), "[" + masterTradingAccount.getTradingAccountNo() + "]" + masterTradingAccount.getName());
+			mapUser.put("" + masterTradingAccount.getMyfxbookId(),
+					"[" + masterTradingAccount.getTradingAccountNo() + "]" + masterTradingAccount.getName());
 		}
 		return mapUser;
 	}
@@ -182,23 +188,22 @@ public class MemberTrxReportAction extends BaseListAction implements ModuleCheck
 	 * ESSENTIAL FOR SEARCH
 	 *******************************************/
 	private String resultSearchJson;
-//
-//	public void makeTableContent()
-//	{		
-//		prepareParamVO(new UserActivityParamVO(), WEB_PARAM_KEY + WebModules.MODULE_REPORT_USER_ACTIVITY,
-//				"ua.updated_on", WebConstants.SORT_ORDER_ASC);		
-//		String[] arrayHeader={getText("l.recordNo"), getText("l.time"), getText("l.userCode"), getText("l.activity"), 
-//				getText("l.moduleName"), getText("l.ipAddress")};
-//		String[] arrayBody={"rowNum", "updatedOnStr", "userCode", "action", "moduleName", "ipAddress"};
-//		String[] arrayDbVariable={"", "ua.updated_on", "ua.user_code","ua.action", 
-//				"ua.module_name", "ua.ip_address"};
-//		
-//		List<LinkTableVO> listLinkTable=new ArrayList<LinkTableVO>();
-//
-//		UserActivityParamVO userActivityParamVO = (UserActivityParamVO) paramVO;
-//		LOG.info("Search cms user activity by param : " + userActivityParamVO);
-//		int totalRow = userActivityService.countUserActivityByParam(userActivityParamVO);		
-//		listUserActivity = userActivityService.selectUserActivityByParam(userActivityParamVO);
+
+	public void makeTableContent() {
+		prepareParamVO(new MemberTrxReportParamVO(), WEB_PARAM_KEY + WebModules.MODULE_REPORT_MEMBER_TRX,
+				"ua.updated_on", WebConstants.SORT_ORDER_ASC);
+		String[] arrayHeader = { getText("l.recordNo"), getText("l.time"), getText("l.userCode"), getText("l.activity"),
+				getText("l.moduleName"), getText("l.ipAddress") };
+		String[] arrayBody = { "rowNum", "updatedOnStr", "userCode", "action", "moduleName", "ipAddress" };
+		String[] arrayDbVariable = { "", "ua.updated_on", "ua.user_code", "ua.action", "ua.module_name",
+				"ua.ip_address" };
+
+		List<LinkTableVO> listLinkTable = new ArrayList<LinkTableVO>();
+
+		MemberTrxReportParamVO memberTrxReportParamVO = (MemberTrxReportParamVO) paramVO;
+		LOG.info("Search cms user activity by param : " + memberTrxReportParamVO);
+//		int totalRow = userActivityService.countUserActivityByParam(memberTrxReportParamVO);		
+//		listUserActivity = userActivityService.selectUserActivityByParam(memberTrxReportParamVO);
 //		Locale language =  (Locale) session.get(WEB_LOCALE_KEY);
 //		try {
 //			String bodyContent = objectMapper.writeValueAsString(listUserActivity);
@@ -208,8 +213,8 @@ public class MemberTrxReportAction extends BaseListAction implements ModuleCheck
 //		} catch (Exception e) {
 //			LOG.warn("Exception when serializing " + listUserActivity, e);
 //		}
-//		
-//	}
+
+	}
 
 	@Override
 	public ParamPagingVO getParamVO() {

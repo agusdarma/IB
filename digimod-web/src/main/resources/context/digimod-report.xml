@@ -66,7 +66,7 @@
             	<param name="location">/WEB-INF/pages/report/jasper/member_transaction_report.jasper</param>
 	            <param name="contentDisposition">attachment</param>
 	            <param name="documentName">${documentName}</param>
-            	<param name="dataSource">listUserActivity</param>
+            	<param name="dataSource">listHistoryTrading</param>
             	<param name="reportParameters">reportParameters</param>
             	<param name="format">${exportType}</param> <!-- format consist of PDF XLS CSV -->
              </result>    

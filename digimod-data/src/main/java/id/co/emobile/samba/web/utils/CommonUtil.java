@@ -49,6 +49,8 @@ public class CommonUtil {
 	private static final Pattern PATTERN_DATETIME = 
 			Pattern.compile("([0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4})|([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2})");
 	
+	public static String formatTimeMyfxBook = "MM/dd/yyyy HH:mm";
+	
 	private static final Random r = new Random();
 	
 	public static String convertNumericFormatToString(String ori) {

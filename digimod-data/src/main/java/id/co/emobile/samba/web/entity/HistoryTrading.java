@@ -1,5 +1,7 @@
 package id.co.emobile.samba.web.entity;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 public class HistoryTrading implements java.io.Serializable {
@@ -7,8 +9,8 @@ public class HistoryTrading implements java.io.Serializable {
 
 	private int id;
 	private String symbol;
-	private String openTime;
-	private String closeTime;
+	private Date openTime;
+	private Date closeTime;
 	private String action;
 	private String sizeLot;
 	private String openPrice;
@@ -18,7 +20,6 @@ public class HistoryTrading implements java.io.Serializable {
 	private String totalCommission;
 	private String companyCommission;
 	private String clientCommission;
-	
 
 	public int getId() {
 		return id;
@@ -38,22 +39,6 @@ public class HistoryTrading implements java.io.Serializable {
 
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
-	}
-
-	public String getOpenTime() {
-		return openTime;
-	}
-
-	public void setOpenTime(String openTime) {
-		this.openTime = openTime;
-	}
-
-	public String getCloseTime() {
-		return closeTime;
-	}
-
-	public void setCloseTime(String closeTime) {
-		this.closeTime = closeTime;
 	}
 
 	public String getAction() {
@@ -126,5 +111,21 @@ public class HistoryTrading implements java.io.Serializable {
 
 	public void setClientCommission(String clientCommission) {
 		this.clientCommission = clientCommission;
+	}
+
+	public Date getOpenTime() {
+		return openTime;
+	}
+
+	public void setOpenTime(Date openTime) {
+		this.openTime = openTime;
+	}
+
+	public Date getCloseTime() {
+		return closeTime;
+	}
+
+	public void setCloseTime(Date closeTime) {
+		this.closeTime = closeTime;
 	}
 }

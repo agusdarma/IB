@@ -2,6 +2,7 @@ package id.co.emobile.samba.web.job;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,7 @@ import id.co.emobile.samba.web.mapper.UserDataMapper;
 import id.co.emobile.samba.web.service.CalculateCommissionService;
 import id.co.emobile.samba.web.service.MasterTradingAccountService;
 import id.co.emobile.samba.web.service.UserDataService;
+import id.co.emobile.samba.web.utils.CommonUtil;
 
 public class SyncHistoryTransactionJob {
 	private static final Logger LOG = LoggerFactory.getLogger(SyncHistoryTransactionJob.class);
@@ -42,7 +44,7 @@ public class SyncHistoryTransactionJob {
 
 	@Autowired
 	private UserDataService userDataService;
-	
+
 	@Autowired
 	private UserDataMapper userDataMapper;
 
@@ -83,8 +85,8 @@ public class SyncHistoryTransactionJob {
 			}
 
 		}
-				
-		time = System.currentTimeMillis() - time;		
+
+		time = System.currentTimeMillis() - time;
 		getLogger().info("Sync history transaction finished took " + time + " milliseconds");
 		try {
 			TimeUnit.SECONDS.sleep(5);
@@ -93,28 +95,35 @@ public class SyncHistoryTransactionJob {
 		} catch (Exception e) {
 			getLogger().error("Error exception logout " + e.toString());
 		}
-		
-		
+
 	}
 
 	private void insertUpdateHistory(HistoryTradingRoot history, MasterTradingAccount tradingAccount) {
 		DecimalFormat df = new DecimalFormat("#.##");
-	    df.setRoundingMode(RoundingMode.FLOOR);
+		df.setRoundingMode(RoundingMode.FLOOR);
 		UserData userIb = userDataMapper.findUserDataByUserCode(tradingAccount.getIbUserCode());
 		double clientCommissionDouble = 0;
-		if(userIb.getTotalClientCommission() != null) {
+		if (userIb.getTotalClientCommission() != null) {
 			try {
-				clientCommissionDouble = Double.parseDouble(userIb.getTotalClientCommission());	
+				clientCommissionDouble = Double.parseDouble(userIb.getTotalClientCommission());
 			} catch (Exception e) {
 
-			}			
+			}
 		}
-		
+
 		for (int i = 0; i < history.getHistory().size(); i++) {
-			
+
 			String symbol = history.getHistory().get(i).getSymbol();
-			String openTime = history.getHistory().get(i).getOpenTime();
-			String closeTime = history.getHistory().get(i).getCloseTime();
+			String tempOpenTime = history.getHistory().get(i).getOpenTime();
+			String tempCloseTime = history.getHistory().get(i).getCloseTime();
+			Date openTime = null;
+			Date closeTime = null;
+			try {
+				openTime = CommonUtil.strToDateTime(CommonUtil.formatTimeMyfxBook, tempOpenTime);
+				closeTime = CommonUtil.strToDateTime(CommonUtil.formatTimeMyfxBook, tempCloseTime);
+			} catch (Exception e) {
+				getLogger().error("Error Date convert " + e.toString());
+			}
 
 			HistoryTrading historyTrading = historyTradingMapper.findHistoryTrading(symbol, openTime, closeTime,
 					tradingAccount.getMyfxbookId());
@@ -125,31 +134,43 @@ public class SyncHistoryTransactionJob {
 					historyTrading.setSymbol(history.getHistory().get(i).getSymbol());
 					historyTrading.setAction(history.getHistory().get(i).getAction());
 					historyTrading.setClosePrice(history.getHistory().get(i).getClosePrice());
-					historyTrading.setCloseTime(history.getHistory().get(i).getCloseTime());
+					try {
+						Date closeTimeConverted = CommonUtil.strToDateTime(CommonUtil.formatTimeMyfxBook,
+								history.getHistory().get(i).getCloseTime());
+//						getLogger().info("Date " + closeTimeConverted);
+						historyTrading.setCloseTime(closeTimeConverted);
+						Date openTimeConverted = CommonUtil.strToDateTime(CommonUtil.formatTimeMyfxBook,
+								history.getHistory().get(i).getOpenTime());
+						historyTrading.setOpenTime(openTimeConverted);
+					} catch (Exception e) {
+						getLogger().error("Error Date convert " + e.toString());
+					}
+
 					historyTrading.setMyfxbookId(tradingAccount.getMyfxbookId());
 					historyTrading.setOpenPrice(history.getHistory().get(i).getOpenPrice());
-					historyTrading.setOpenTime(history.getHistory().get(i).getOpenTime());
 					historyTrading.setProfit(history.getHistory().get(i).getProfit());
 					historyTrading.setSizeLot(history.getHistory().get(i).getSizing().getValue());
 
 					// hitung komisi total
-					historyTrading.setTotalCommission(calculateCommissionService.calculateTotalCommission(historyTrading, tradingAccount));
+					historyTrading.setTotalCommission(
+							calculateCommissionService.calculateTotalCommission(historyTrading, tradingAccount));
 					// hitung komisi perusahaan/comapny
-					historyTrading.setCompanyCommission(calculateCommissionService.calculateCompanyCommission(historyTrading.getTotalCommission(), tradingAccount));
+					historyTrading.setCompanyCommission(calculateCommissionService
+							.calculateCompanyCommission(historyTrading.getTotalCommission(), tradingAccount));
 					// hitung komisi client
-					historyTrading.setClientCommission(calculateCommissionService.calculateClientCommission(historyTrading.getTotalCommission(), tradingAccount));
-					
-					
-				    double result = new Double(df.format(Double.parseDouble(historyTrading.getClientCommission())));					
-					clientCommissionDouble = clientCommissionDouble + result;					
+					historyTrading.setClientCommission(calculateCommissionService
+							.calculateClientCommission(historyTrading.getTotalCommission(), tradingAccount));
+
+					double result = new Double(df.format(Double.parseDouble(historyTrading.getClientCommission())));
+					clientCommissionDouble = clientCommissionDouble + result;
 					historyTradingMapper.createHistoryTrading(historyTrading);
 				}
 
 			}
 
 		}
-		
-	    double result = new Double(df.format(clientCommissionDouble));
+
+		double result = new Double(df.format(clientCommissionDouble));
 		userIb.setTotalClientCommission(Double.toString(result));
 		getLogger().info("userIb updated " + userIb.getTotalClientCommission());
 		userDataMapper.updateCommission(userIb);
