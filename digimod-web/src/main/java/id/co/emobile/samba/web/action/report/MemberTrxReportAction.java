@@ -76,10 +76,7 @@ public class MemberTrxReportAction extends BaseListAction implements ModuleCheck
 	}
 
 	public String processSearch() {
-		try {
-			getLogger().debug("processSearch: {}", paramVO);
-			getLogger().debug("rowStartMysql: {}", paramVO.getRowStartMysql());
-			getLogger().debug("rowPerPage: {}", paramVO.getRowPerPage());
+		try {			
 			getLogger().debug("startDate: {}", paramVO.getStartDate());
 			getLogger().debug("endDate: {}", paramVO.getEndDate());
 			getLogger().debug("userDataId: {}", paramVO.getUserDataId());
@@ -96,7 +93,7 @@ public class MemberTrxReportAction extends BaseListAction implements ModuleCheck
 		listHistoryTrading = historyTradingMapper.selectHistoryTradingByParamNoPaging(paramVO);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String today = sdf.format(timeService.getCurrentTime());
-		documentName = "user_activity-" + today;
+		documentName = "member_transaction-" + today;
 
 		LOG.info("exporting userActivity with param:" + paramVO + ", with exportType : " + exportType);
 		return "EXPORT";
