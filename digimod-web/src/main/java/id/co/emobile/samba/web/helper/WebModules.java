@@ -7,6 +7,7 @@ public class WebModules {
 	public static final int MODULE_SECURITY_RESET_PASSWORD			= 104;
 	public static final int MODULE_SECURITY_USER_PREFERENCE			= 105;
 	public static final int MODULE_SECURITY_MANAGE_MEMBER			= 106;
+	public static final int MODULE_SECURITY_WITHDRAW				= 107;
 	
 
 	public static final int MODULE_APPS_SETTING_SOURCE_ACCOUNT 		= 201;

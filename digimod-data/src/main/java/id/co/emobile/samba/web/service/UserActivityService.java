@@ -64,6 +64,7 @@ public class UserActivityService {
 	public static final String MODULE_MANAGE_USER_BRANCH	= "Manage User Branch";
 	public static final String MODULE_MANAGE_GROUP_APPROVAL	= "Manage Group Approval";
 	public static final String MODULE_MANAGE_MASTER_TRADING_ACCOUNT	= "Manage Master Trading Account";
+	public static final String MODULE_MANAGE_WITHDRAW_COMMISSION	= "Withdraw Commission";
 	
 	public static final String TABLE_USER_DATA	= "user_data";
 	public static final String TABLE_USER_PREF = "user_preference";
@@ -72,6 +73,7 @@ public class UserActivityService {
 	public static final String TABLE_USER_LEVEL		= "user_level";
 	public static final String TABLE_USER_GROUP		= "user_group";
 	public static final String TABLE_MASTER_TRADING_ACCOUNT		= "master_trading_account";
+	public static final String TABLE_HISTORY_WITHDRAW		= "history_withdraw";
 	public static final String TABLE_USER_BRANCH		= "user_branch";
 	public static final String TABLE_USER_GROUP_APPROVAL = "user_group_approval";
 	

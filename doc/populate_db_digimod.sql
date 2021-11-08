@@ -30,7 +30,9 @@ values (103, 1, 2, 3, 'icon_change_password.png', 'Change Password', 'ChangePass
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
 values (104, 1, 2, 4, 'icon_manage_user.png', 'Reset Password', 'ResetPassword', 'Security Module', 0);
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
-values (106, 1, 2, 5, 'icon_manage_user.png', 'Manage Member', 'ManageMember', 'Security Module', 0);
+values (106, 1, 2, 6, 'icon_manage_user.png', 'Manage Member', 'ManageMember', 'Security Module', 0);
+insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
+values (107, 1, 2, 7, 'icon_manage_user.png', 'Withdraw Commission', 'WithdrawAction', 'Security Module', 0);
 
 insert into user_menu (menu_id, parent_id, menu_level, show_order, menu_icon, menu_text, menu_url, menu_group, always_include)
 values (201, 2, 2, 1, 'icon_manage_user.png', 'Manage Source Account', 'SourceAccount', 'System Support Module', 0);

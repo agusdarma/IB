@@ -228,6 +228,18 @@ public class UserData implements java.io.Serializable {
 	public void setClientCommissionWithdrawn(String clientCommissionWithdrawn) {
 		this.clientCommissionWithdrawn = clientCommissionWithdrawn;
 	}
+	public String getClientCommissionAvailable() {
+		String clientCommissionAvailable = "0";
+		try {
+			double total = Double.parseDouble(totalClientCommission);
+			double commissionWithdrawn = Double.parseDouble(clientCommissionWithdrawn);
+			double avaiable = total - commissionWithdrawn;
+			clientCommissionAvailable = Double.toString(avaiable);
+		} catch (Exception e) {
+			System.err.println(e.toString());
+		}		
+		return clientCommissionAvailable;
+	}
 	
 	
 }

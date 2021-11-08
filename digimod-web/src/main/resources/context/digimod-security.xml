@@ -84,5 +84,19 @@
 				<param name="inputName">wsr</param>
 			</result>
 		</action>
+		
+		<action name="WithdrawAction!*" method="{1}" class="id.co.emobile.samba.web.action.security.WithdrawAction">
+			<interceptor-ref name="webSecureStack" />
+			<result name="input">WEB-INF/pages/security/withdraw_input.jsp</result>
+			<result name="search">WEB-INF/pages/security/member_account_search.jsp</result>
+			<result name="inputJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wrv</param>
+			</result>
+			<result name="searchJson" type="stream">
+				<param name="contentType">text/plain</param>
+				<param name="inputName">wsr</param>
+			</result>
+		</action>
 	</package>
 </struts>

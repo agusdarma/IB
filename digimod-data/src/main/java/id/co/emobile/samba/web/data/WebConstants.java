@@ -71,6 +71,12 @@ public class WebConstants {
 	public static final int ACC_STATUS_PASSIVE		= 7;
 	public static final int ACC_STATUS_CLOSE		= 9;
 	
+	
+	// wd status
+	public static final int WD_STATUS_PENDING		= 1;
+	public static final int WD_STATUS_PROCESS		= 2;
+	public static final int WD_STATUS_COMPLETED		= 3;
+	
 	public static final Map<Integer, String> MAP_ACC_STATUS = new HashMap<Integer, String>();
 	static {
 		MAP_ACC_STATUS.put(ACC_STATUS_INACTIVE, "Not Active");
