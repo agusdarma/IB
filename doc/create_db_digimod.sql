@@ -288,3 +288,13 @@ CREATE TABLE history_trading
  myfxbook_id VARCHAR(16) NOT NULL,
  PRIMARY KEY (id)
 );
+
+CREATE TABLE history_withdraw
+(
+ id INT AUTO_INCREMENT NOT NULL,
+ ib_user_code VARCHAR(100) NOT NULL,
+ amount DECIMAL(12,2) NOT NULL,
+ date_withdraw_on DATETIME NOT NULL,
+ status INT NOT NULL,
+ PRIMARY KEY (id)
+);
