@@ -3,6 +3,7 @@ package id.co.emobile.samba.web.service;
 public class SambaWebException extends Exception {
 	private static final long serialVersionUID = 1L;
 
+	public static final int NE_INSUFFICIENT_BALANCE = 99998;
 	public static final int NE_UNKNOWN_ERROR = 99999;
 	public static final int NE_MISSING_INPUT = 10000;
 	public static final int NE_SESSION_EXPIRED = 10001;

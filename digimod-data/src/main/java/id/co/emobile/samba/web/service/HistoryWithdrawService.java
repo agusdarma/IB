@@ -15,7 +15,9 @@ import id.co.emobile.samba.web.data.UserDataLoginVO;
 import id.co.emobile.samba.web.data.WebConstants;
 import id.co.emobile.samba.web.data.WebResultVO;
 import id.co.emobile.samba.web.entity.HistoryWithdraw;
+import id.co.emobile.samba.web.entity.UserData;
 import id.co.emobile.samba.web.mapper.HistoryWithdrawMapper;
+import id.co.emobile.samba.web.mapper.UserDataMapper;
 
 @Service
 public class HistoryWithdrawService {
@@ -28,9 +30,12 @@ public class HistoryWithdrawService {
 
 	@Autowired
 	private BizMessageService messageService;
-	
+
 	@Autowired
 	private UserActivityService userActivityService;
+
+	@Autowired
+	private UserDataMapper userDataMapper;
 
 	@Transactional(rollbackFor = Exception.class)
 	public WebResultVO withdrawing(String amount, UserDataLoginVO loginVO, Locale language) throws SambaWebException {
@@ -48,7 +53,15 @@ public class HistoryWithdrawService {
 				LOGGER.warn("Minimum withdraw 1$ !");
 				throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
 						new String[] { messageService.getMessageFor("e.amountMinWd") });
-			}	
+			}
+			amountDouble = Double.parseDouble(amount);
+			double maxAvailableWd = Double.parseDouble(loginVO.getClientCommissionAvailable());
+			if (amountDouble > maxAvailableWd) {
+				LOGGER.warn("Insufficient balance ! Max withdraw : " + maxAvailableWd);
+				throw new SambaWebException(SambaWebException.NE_INSUFFICIENT_BALANCE,
+						new String[] { messageService.getMessageFor("e.amountMaxWd", 
+								new String[] {loginVO.getClientCommissionAvailable()}, language) });
+			}
 		} catch (SambaWebException e) {
 			throw e;
 		} catch (Exception e) {
@@ -56,19 +69,21 @@ public class HistoryWithdrawService {
 			throw new SambaWebException(SambaWebException.NE_MISSING_INPUT,
 					new String[] { messageService.getMessageFor("e.amountNumeric") });
 		}
-		
+
 		HistoryWithdraw historyWithdraw = new HistoryWithdraw();
-		try {			
+		try {
+			UserData userData = userDataMapper.findUserDataByUserCode(loginVO.getUserCode());
+			updateWithdrawAvailable(amount, userData);			
 			historyWithdraw.setDateWithdrawOn(now);
 			historyWithdraw.setIbUserCode(loginVO.getUserCode());
 			historyWithdraw.setStatus(WebConstants.WD_STATUS_PENDING);
+			historyWithdraw.setAmount(Double.parseDouble(amount));
 			historyWithdrawMapper.createHistoryWithdraw(historyWithdraw);
 
 			String desc = "Withdraw with amount " + historyWithdraw.getAmount() + " created.";
 			userActivityService.createUserActivityCreateData(loginVO,
 					UserActivityService.MODULE_MANAGE_WITHDRAW_COMMISSION, desc,
-					UserActivityService.TABLE_HISTORY_WITHDRAW, historyWithdraw.getId(),
-					historyWithdraw);
+					UserActivityService.TABLE_HISTORY_WITHDRAW, historyWithdraw.getId(), historyWithdraw);
 
 			wrv.setRc(WebConstants.RESULT_SUCCESS);
 			wrv.setMessage(messageService.getMessageFor("rm.generalMessage",
@@ -82,6 +97,19 @@ public class HistoryWithdrawService {
 			throw swe;
 		}
 
+	}
+
+	private void updateWithdrawAvailable(String amount, UserData userData) {
+		try {
+			double clientCommissionWithdrawn = Double.parseDouble(userData.getClientCommissionWithdrawn());
+			double amountWd = Double.parseDouble(amount);
+			clientCommissionWithdrawn = clientCommissionWithdrawn + amountWd;
+			userData.setClientCommissionWithdrawn(Double.toString(clientCommissionWithdrawn));
+			LOGGER.info("Update Withdraw Available " + userData);
+			userDataMapper.updateCommission(userData);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	public List<HistoryWithdraw> findHistoryWithdrawByIbUserCode(String ibUserCode) throws SambaWebException {

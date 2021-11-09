@@ -166,6 +166,10 @@ Insert into lookup_data (lookup_cat,lookup_value,lookup_desc,lookup_order,update
 Insert into lookup_data (lookup_cat,lookup_value,lookup_desc,lookup_order,updated_by,updated_on) values (7,'510','Sanksi/Denda/Kenaikan Pengungkapan ketidak benaran',13,1, now());
 Insert into lookup_data (lookup_cat,lookup_value,lookup_desc,lookup_order,updated_by,updated_on) values (7,'511','Sanksi Denda Penghentian Penyidikan',14,1, now());
 
+Insert into lookup_data (lookup_cat,lookup_value,lookup_desc,lookup_order,updated_by,updated_on) values (8,'1','Pending',1,1, now());
+Insert into lookup_data (lookup_cat,lookup_value,lookup_desc,lookup_order,updated_by,updated_on) values (8,'2','Process',2,1, now());
+Insert into lookup_data (lookup_cat,lookup_value,lookup_desc,lookup_order,updated_by,updated_on) values (8,'3','Completed',3,1, now());
+
 
 
 -- // system setting for WEB
