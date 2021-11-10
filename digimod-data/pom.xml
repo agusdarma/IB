@@ -61,6 +61,14 @@
 			<version>1.4</version>
 		</dependency>
 		
+		<!-- Send Email -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>1.4.7</version>
+		</dependency>
+		
+		
 		<!-- http client -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>

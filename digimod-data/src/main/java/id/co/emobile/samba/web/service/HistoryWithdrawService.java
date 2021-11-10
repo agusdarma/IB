@@ -35,6 +35,9 @@ public class HistoryWithdrawService {
 	private UserActivityService userActivityService;
 
 	@Autowired
+	private SendEmailService sendEmailService;
+
+	@Autowired
 	private UserDataMapper userDataMapper;
 
 	@Transactional(rollbackFor = Exception.class)
@@ -59,8 +62,8 @@ public class HistoryWithdrawService {
 			if (amountDouble > maxAvailableWd) {
 				LOGGER.warn("Insufficient balance ! Max withdraw : " + maxAvailableWd);
 				throw new SambaWebException(SambaWebException.NE_INSUFFICIENT_BALANCE,
-						new String[] { messageService.getMessageFor("e.amountMaxWd", 
-								new String[] {loginVO.getClientCommissionAvailable()}, language) });
+						new String[] { messageService.getMessageFor("e.amountMaxWd",
+								new String[] { loginVO.getClientCommissionAvailable() }, language) });
 			}
 		} catch (SambaWebException e) {
 			throw e;
@@ -73,7 +76,7 @@ public class HistoryWithdrawService {
 		HistoryWithdraw historyWithdraw = new HistoryWithdraw();
 		try {
 			UserData userData = userDataMapper.findUserDataByUserCode(loginVO.getUserCode());
-			updateWithdrawAvailable(amount, userData);			
+			updateWithdrawAvailable(amount, userData);
 			historyWithdraw.setDateWithdrawOn(now);
 			historyWithdraw.setIbUserCode(loginVO.getUserCode());
 			historyWithdraw.setStatus(WebConstants.WD_STATUS_PENDING);
@@ -91,6 +94,8 @@ public class HistoryWithdrawService {
 							messageService.getMessageFor("l.created", language) },
 					language));
 			wrv.setType(WebConstants.TYPE_INSERT);
+			sendEmailService.sendEmail(historyWithdraw, "Withdrawal Request Received", "agusdk2011@gmail.com", "Agus",
+					"Pending");
 			return wrv;
 		} catch (Exception swe) {
 			LOGGER.warn("error when saving withdraw {}" + historyWithdraw, swe);
