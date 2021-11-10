@@ -1,5 +1,7 @@
 package id.co.emobile.samba.web.entity;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -231,10 +233,13 @@ public class UserData implements java.io.Serializable {
 	public String getClientCommissionAvailable() {
 		String clientCommissionAvailable = "0";
 		try {
+			DecimalFormat df = new DecimalFormat("#.##");
+			df.setRoundingMode(RoundingMode.FLOOR);
 			double total = Double.parseDouble(totalClientCommission);
 			double commissionWithdrawn = Double.parseDouble(clientCommissionWithdrawn);
-			double avaiable = total - commissionWithdrawn;
-			clientCommissionAvailable = Double.toString(avaiable);
+			double available = total - commissionWithdrawn;
+			double result = new Double(df.format(available));
+			clientCommissionAvailable = Double.toString(result);
 		} catch (Exception e) {
 			System.err.println(e.toString());
 		}		
