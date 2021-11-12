@@ -110,6 +110,11 @@
 	<bean id="ServerPerformance" class="id.co.emobile.samba.web.service.ServerPerformanceService" >
 	    <property name="serverNameForTrx" value="contohNamaServer" />
 	</bean>
+	
+	<bean id="emailSenderService" class="id.co.emobile.samba.web.service.EmailSenderService" 
+			init-method="init" destroy-method="shutdown">		
+		<property name="agentCount" value="20" />
+	</bean>
 		
 	<!-- ========================= SCHEDULER ========================= -->
 	<bean id="syncTimeJob" class="id.co.emobile.samba.web.job.SyncTimeJob" init-method="syncTime" />
