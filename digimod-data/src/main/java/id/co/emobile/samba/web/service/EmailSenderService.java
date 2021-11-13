@@ -51,7 +51,7 @@ public class EmailSenderService {
 		} catch (Exception e) {
 			LOG.warn("Exception in shutdown", e);
 		}
-		LOG.info("SmsSenderService is shutdown");
+		LOG.info("EmailSenderService is shutdown");
 	}
 
 	public void sendSms(String phoneNo, String message, String sysLogNo, String trxCode) {
