@@ -57,7 +57,7 @@ public class WithdrawAction extends BaseListAction implements ModuleCheckable {
 		UserDataLoginVO loginVO = (UserDataLoginVO) session.get(LOGIN_KEY);
 		Locale language = (Locale) session.get(WEB_LOCALE_KEY);
 		try {
-			wrv = historyWithdrawService.withdrawing(amount, loginVO, language);
+			wrv = historyWithdrawService.withdrawing(amount, loginVO, language,session);
 			if (wrv.getType() == WebConstants.TYPE_UPDATE) {
 				setFlashMessage(wrv.getMessage());
 			}

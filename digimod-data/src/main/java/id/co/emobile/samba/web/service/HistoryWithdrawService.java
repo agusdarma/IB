@@ -3,6 +3,7 @@ package id.co.emobile.samba.web.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class HistoryWithdrawService {
 	private UserDataMapper userDataMapper;
 
 	@Transactional(rollbackFor = Exception.class)
-	public WebResultVO withdrawing(String amount, UserDataLoginVO loginVO, Locale language) throws SambaWebException {
+	public WebResultVO withdrawing(String amount, UserDataLoginVO loginVO, Locale language, Map<String, Object> session) throws SambaWebException {
 		WebResultVO wrv = new WebResultVO();
 		Date now = timeService.getCurrentTime();
 
@@ -77,6 +78,10 @@ public class HistoryWithdrawService {
 		try {
 			UserData userData = userDataMapper.findUserDataByUserCode(loginVO.getUserCode());
 			updateWithdrawAvailable(amount, userData);
+			
+			loginVO.setClientCommissionWithdrawn(userData.getClientCommissionWithdrawn());		
+			session.put("LOGIN_KEY", loginVO);
+			
 			historyWithdraw.setDateWithdrawOn(now);
 			historyWithdraw.setIbUserCode(loginVO.getUserCode());
 			historyWithdraw.setStatus(WebConstants.WD_STATUS_PENDING);
