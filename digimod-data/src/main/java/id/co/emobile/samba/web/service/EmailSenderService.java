@@ -1,23 +1,24 @@
 package id.co.emobile.samba.web.service;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
+import id.co.emobile.samba.web.entity.HistoryWithdraw;
 import id.co.emobile.samba.web.http.HttpTransmitterAgent;
-import id.co.emobile.samba.web.utils.CommonUtil;
 
 public class EmailSenderService {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailSenderService.class);
@@ -54,73 +55,96 @@ public class EmailSenderService {
 		LOG.info("EmailSenderService is shutdown");
 	}
 
-	public void sendSms(String phoneNo, String message, String sysLogNo, String trxCode) {
-		LOG.debug("sendSms to phoneNo {}, message {}, trxCode {}", phoneNo, message, trxCode);
+	public void sendEmailAsync(HistoryWithdraw historyWithdraw, String subject, String emailTo, String name,
+			String statusValue) {
+		LOG.debug("sendEmailAsync to emailTo {}, subject {}, name {}", emailTo, subject, name);
 		try {
-			InternalSmsSender sender = new InternalSmsSender(phoneNo, message, sysLogNo, trxCode);
+			InternalEmailSender sender = new InternalEmailSender(historyWithdraw, subject, emailTo, name, statusValue);
 			executor.execute(sender);
 		} catch (Exception e) {
-			LOG.warn("Exception in sendSms to " + phoneNo, e);
+			LOG.warn("Exception in sendEmailAsync to " + emailTo, e);
 		}
 	}
 
-	private class InternalSmsSender implements Runnable {
-		final String phoneNo;
-		final String message;
-		final String sysLogNo;
-		final String trxCode;
+	private class InternalEmailSender implements Runnable {
+		final HistoryWithdraw historyWithdraw;
+		final String subject;
+		final String emailTo;
+		final String name;
+		final String statusValue;
 
-		InternalSmsSender(String phoneNo, String message, String sysLogNo, String trxCode) {
-			this.phoneNo = phoneNo;
-			this.message = message;
-			this.sysLogNo = sysLogNo;
-			this.trxCode = trxCode;
+		InternalEmailSender(HistoryWithdraw historyWithdraw, String subject, String emailTo, String name,
+				String statusValue) {
+			this.historyWithdraw = historyWithdraw;
+			this.subject = subject;
+			this.emailTo = emailTo;
+			this.name = name;
+			this.statusValue = statusValue;
 		}
 
 		@Override
 		public void run() {
-			try {
-				String serverUrl = settingService.getSettingAsString(SettingService.SETTING_SMS_GATEWAY_URL);
-				String encKey = settingService.getSettingAsString(SettingService.SETTING_SMS_GATEWAY_ENC_KEY);
-				if (StringUtils.isEmpty(serverUrl)) {
-					LOG.warn("No serverUrl is defined. NOT SENDING SMS");
-					return;
+			String userName = name;
+			String status = statusValue;
+			String amount = "$" + Double.toString(historyWithdraw.getAmount());
+			// Recipient's email ID needs to be mentioned.
+			String to = emailTo;
+
+			// Sender's email ID needs to be mentioned
+			String from = "admin@nabungdividen.com";
+			final String username = "admin@nabungdividen.com";// change accordingly
+			final String password = "";// change accordingly
+
+			// Assuming you are sending email through relay.jangosmtp.net
+			String host = "smtp.hostinger.com";
+
+			Properties props = new Properties();
+			props.put("mail.smtp.auth", "true");
+//			props.put("mail.smtp.starttls.enable", "true");
+//			props.put("mail.smtp.ssl.enable", true);
+			props.put("mail.smtp.host", host);
+			props.put("mail.smtp.port", "465");
+
+			props.put("mail.smtp.socketFactory.port", "465");
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
+			// Get the Session object.
+			Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
 				}
-				SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssSSS");
-				String logno = sdf.format(new Date()) + CommonUtil.generateRandomPin(1);
-				List<NameValuePair> listParam = new ArrayList<NameValuePair>();
+			});
 
-				listParam.add(new BasicNameValuePair("p", phoneNo));
-				listParam.add(new BasicNameValuePair("g", ""));
-				listParam.add(new BasicNameValuePair("mmbsref", ""));
-				listParam.add(new BasicNameValuePair("rc", "0"));
-				listParam.add(new BasicNameValuePair("dsacname", ""));
-				listParam.add(new BasicNameValuePair("trx", trxCode));
-				listParam.add(new BasicNameValuePair("state", "99"));
-				listParam.add(new BasicNameValuePair("syslogno", sysLogNo));
-				listParam.add(new BasicNameValuePair("msglogno", logno));
-				listParam.add(new BasicNameValuePair("c", "SMS"));
-				String hexaMessage = CommonUtil.toHexString(message.getBytes());
-				listParam.add(new BasicNameValuePair("m", hexaMessage));
+			try {
+				// Create a default MimeMessage object.
+				Message message = new MimeMessage(session);
 
-				StringBuilder sb = new StringBuilder();
-				for (NameValuePair nvp : listParam)
-					sb.append(nvp.getName()).append("=").append(nvp.getValue()).append("&");
-				LOG.debug("Param Message Send Notif To Gateway -> " + sb.toString());
-//				String encMessage = encrypt(sb.toString(), encKey);
+				// Set From: header field of the header.
+				message.setFrom(new InternetAddress(from));
 
-//				List<NameValuePair> params = new ArrayList<NameValuePair>();
-//				params.add(new BasicNameValuePair("x", encMessage));
+				// Set To: header field of the header.
+				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
-//				ResponseData responseData = transmitterAgent.sendGetMessage(serverUrl, params);
-//				if (responseData.getResultCode() == 0) {
-//					LOG.debug("OK, Response: {}", responseData.getMsgToUser());
-//				} else {
-//					LOG.warn("Error sending sms: {}", responseData);
-//				}
+				// Set Subject: header field
+				message.setSubject(subject);
+
+				// Send the actual HTML message, as big as you like
+//				message.setContent("<h1>This is actual message embedded in HTML tags</h1>", "text/html");
+				message.setContent(
+						"<h1 style=\"text-align: center;\"><img src=\"https://nabungdividen.com/wp-content/uploads/2021/06/cropped-logo-final-1.png\" alt=\"\" /></h1>\r\n"
+								+ "<h1 style=\"text-align: center;\">Withdrawal Request Received</h1>\r\n"
+								+ "<p>Dear, <strong>" + userName + "</strong></p>\r\n"
+								+ "<p>Your withdrawal request of your commission has been processed:</p>\r\n"
+								+ "<p><strong>Status: " + status + "</strong></p>\r\n" + "<p><strong>Amount : " + amount
+								+ "</strong></p>\r\n" + "<p>&nbsp;</p>\r\n"
+								+ "<p><strong>Best Regards,</strong><br /><strong>Nabungdividen Team.</strong></p>",
+						"text/html");
+
+				// Send message
+				Transport.send(message);
 
 			} catch (Exception e) {
-				LOG.warn("Exception in sending SMS to " + phoneNo, e);
+				e.printStackTrace();
 			}
 		}
 

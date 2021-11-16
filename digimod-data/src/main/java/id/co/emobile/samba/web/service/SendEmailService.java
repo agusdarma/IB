@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import id.co.emobile.samba.web.entity.HistoryWithdraw;
@@ -19,11 +20,20 @@ import id.co.emobile.samba.web.entity.HistoryWithdraw;
 public class SendEmailService {
 	private static final Logger LOG = LoggerFactory.getLogger(SendEmailService.class);
 
+	@Autowired
+	private EmailSenderService emailSenderService;
+
 	protected Logger getLogger() {
 		return LOG;
 	}
+	
+	public void sendEmailAsync(HistoryWithdraw historyWithdraw, String subject, String emailTo, String name,
+			String statusValue){
+		emailSenderService.sendEmailAsync(historyWithdraw, subject, emailTo, name, statusValue);
+	}
 
-	public void sendEmail(HistoryWithdraw historyWithdraw, String subject, String emailTo,String name, String statusValue) throws SambaWebException {
+	public void sendEmail(HistoryWithdraw historyWithdraw, String subject, String emailTo, String name,
+			String statusValue) throws SambaWebException {
 		getLogger().info("send email notification " + historyWithdraw);
 		String userName = name;
 		String status = statusValue;
@@ -74,7 +84,7 @@ public class SendEmailService {
 			message.setContent(
 					"<h1 style=\"text-align: center;\"><img src=\"https://nabungdividen.com/wp-content/uploads/2021/06/cropped-logo-final-1.png\" alt=\"\" /></h1>\r\n"
 							+ "<h1 style=\"text-align: center;\">Withdrawal Request Received</h1>\r\n"
-							+ "<p>Dear, <strong>"+userName+"</strong></p>\r\n"
+							+ "<p>Dear, <strong>" + userName + "</strong></p>\r\n"
 							+ "<p>Your withdrawal request of your commission has been processed:</p>\r\n"
 							+ "<p><strong>Status: " + status + "</strong></p>\r\n" + "<p><strong>Amount : " + amount
 							+ "</strong></p>\r\n" + "<p>&nbsp;</p>\r\n"

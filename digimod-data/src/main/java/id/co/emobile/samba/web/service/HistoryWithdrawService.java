@@ -94,7 +94,9 @@ public class HistoryWithdrawService {
 							messageService.getMessageFor("l.created", language) },
 					language));
 			wrv.setType(WebConstants.TYPE_INSERT);
-			sendEmailService.sendEmail(historyWithdraw, "Withdrawal Request Received", "agusdk2011@gmail.com", "Agus",
+//			sendEmailService.sendEmail(historyWithdraw, "Withdrawal Request Received", "agusdk2011@gmail.com", "Agus",
+//					"Pending");
+			sendEmailService.sendEmailAsync(historyWithdraw, "Withdrawal Request Received", "agusdk2011@gmail.com", "Agus",
 					"Pending");
 			return wrv;
 		} catch (Exception swe) {
